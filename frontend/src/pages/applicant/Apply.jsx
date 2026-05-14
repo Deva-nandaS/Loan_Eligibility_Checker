@@ -50,12 +50,19 @@ export const Apply = () => {
       newErrors.amount = "Amount cannot exceed 10x income";
     }
 
-
     try {
-      const res=await createLoan({name,age,emptype,income,credit,tenure,purpose,amount})
-      toast.success("Submitted")
-    } 
-    catch (err) {
+      const res = await createLoan({
+        name,
+        age,
+        emptype,
+        income,
+        credit,
+        tenure,
+        purpose,
+        amount,
+      });
+      toast.success("Submitted");
+    } catch (err) {
       toast.error(err?.response?.data?.message || "Submission failed");
     }
   };

@@ -9,9 +9,7 @@ const {
   MAX_LOAN_MULTIPLIER,
   MIN_JOB_TENURE_YEARS,
 } = loanMetrics;
-
-
-
+S
 const loanEligibility = (applicant) => {
   const err = [];
 
