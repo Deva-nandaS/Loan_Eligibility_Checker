@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { registerUser } from "../../api/auth";
 
 export const Register = () => {
   const [name, setName] = useState("");
@@ -19,7 +20,25 @@ export const Register = () => {
 
       return;
     }
-    toast.success("Registered succesfully");
+     try {
+
+    const response = await registerUser(
+      name,
+      email,
+      password,
+      "applicant"
+    );
+
+    console.log(response);
+
+    toast.success("Registered successfully");
+
+  } catch (err) {
+
+    console.log(err);
+
+    toast.error("Registration failed");
+  }
   };
 
   return (

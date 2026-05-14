@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { loginUser } from "../api/auth";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,10 +16,22 @@ export const Login = () => {
     }
     if (!password) {
       alert("Password mismatch");
-
       return;
-    }   
-    toast.success("Login successful");
+    }
+    try {
+      const data = await loginUser(email, password);
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      const user = data.data.user;
+
+      if (user.role === "admin") {
+        navigate("/admin/admindashboard");
+      } else {
+        navigate("/applicant/applicantdashboard");
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Login failed");
+    }
   };
 
   return (
