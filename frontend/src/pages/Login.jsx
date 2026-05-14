@@ -11,11 +11,12 @@ export const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
-      alert("Fill name field");
+      toast.error("Email is required");
       return;
     }
+
     if (!password) {
-      alert("Password mismatch");
+      toast.error("Password is required");
       return;
     }
     try {
@@ -30,7 +31,7 @@ export const Login = () => {
         navigate("/applicant/applicantdashboard");
       }
     } catch (err) {
-      toast.error(err?.data?.message || "Login failed");
+      toast.error(err?.response?.data?.message || "Login failed");
     }
   };
 
@@ -47,7 +48,7 @@ export const Login = () => {
 
             <p className="text-center mb-4">
               Not registered yet?{" "}
-              <Link to="/" className="text-blue-500">
+              <Link to="/register" className="text-blue-500">
                 Sign up
               </Link>
             </p>
