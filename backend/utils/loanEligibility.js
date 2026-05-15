@@ -1,5 +1,4 @@
-const loanMetrics = require("./config/loanMetrics");
-const loan = require("./models/loan.model");
+const loanMetrics = require("../config/loanMetrics");
 const {
   MIN_AGE,
   MAX_AGE,
@@ -9,7 +8,7 @@ const {
   MAX_LOAN_MULTIPLIER,
   MIN_JOB_TENURE_YEARS,
 } = loanMetrics;
-S
+
 const loanEligibility = (applicant) => {
   const err = [];
 
@@ -19,23 +18,35 @@ const loanEligibility = (applicant) => {
   if (applicant.income < MIN_MONTHLY_INCOME) {
     err.push("Minimum income criteria not met.");
   }
-  if (applicant.debtR > MAX_DEBT_TO_INCOME_RATIO) {
-    res.push("Existing debts cannot exceed 40% of income ");
+  const dtiRatio = applicant.debt / applicant.income;
+  if (dtiRatio > MAX_DEBT_TO_INCOME_RATIO) {
+    err.push("Existing debts cannot exceed 40% of income ");
   }
 
-  if ((applicant.credit = MIN_CREDIT_SCORE)) {
+  if (applicant.credit < MIN_CREDIT_SCORE) {
     err.push("Not enough credit score ");
   }
-  if (applicant.loanAmount > applicant.income * MAX_LOAN_MULTIPLIER) {
+  if (applicant.amount > applicant.income * MAX_LOAN_MULTIPLIER)
     err.push("Loan amount cannot exceed 10x monthly income");
-  }
+
   if (
     applicant.emptype === salaried &&
     applicant.tenure < MIN_JOB_TENURE_YEARS
   ) {
     err.push("Must have atleast 1 year at current job");
   }
-  return err;
+  const rateInfo = INTEREST_RATE_MATRIX.find(
+    (r) => applicant.credit >= r.min && applicant.credit <= r.max,
+  );
+
+  if (err.length > 0) {
+    return { eligible: false, reasons: err };
+  }
+
+  return {
+    eligible: true,
+    riskCategory: rateInfo.category,
+  };
 };
 
 module.exports = loanEligibility;

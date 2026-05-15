@@ -4,7 +4,7 @@ const loanSchema = new mongoose.Schema({
   name: { type: String, required: true },
 
   age: { type: Number, required: true },
-  
+
   emptype: { type: String, required: true },
 
   income: { type: Number, required: true },
@@ -22,7 +22,7 @@ const loanSchema = new mongoose.Schema({
   riskCategory: { type: String },
   reasons: { type: [String] },
 
-  user: { type: mongoose.Schema.type.objectId, ref: "User" },
+  user: { type: mongoose.Schema.Types, ObjectId, ref: "User" },
   createdAt: { type: Date, default: Date.now() },
 });
 
