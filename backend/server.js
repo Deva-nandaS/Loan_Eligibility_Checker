@@ -21,7 +21,7 @@ seedAdmin();
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoute);
 app.use("/api/applicant", applicantRoute);
-app.use("/api/apply", loanRoutes);
+app.use("/api/loan", loanRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

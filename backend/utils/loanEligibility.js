@@ -7,9 +7,14 @@ const {
   MIN_CREDIT_SCORE,
   MAX_LOAN_MULTIPLIER,
   MIN_JOB_TENURE_YEARS,
+  INTEREST_RATE_MATRIX,
+   EMPLOYMENT_TYPE_MULTIPLIERS ,
+   LOAN_PURPOSE_MULTIPLIERS
+  
 } = loanMetrics;
 
 const loanEligibility = (applicant) => {
+  
   const err = [];
 
   if (applicant.age < MIN_AGE || applicant.age > MAX_AGE) {
@@ -30,7 +35,7 @@ const loanEligibility = (applicant) => {
     err.push("Loan amount cannot exceed 10x monthly income");
 
   if (
-    applicant.emptype === salaried &&
+    applicant.emptype ==="Salaried" &&
     applicant.tenure < MIN_JOB_TENURE_YEARS
   ) {
     err.push("Must have atleast 1 year at current job");

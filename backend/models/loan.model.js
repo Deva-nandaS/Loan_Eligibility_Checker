@@ -8,6 +8,7 @@ const loanSchema = new mongoose.Schema({
   emptype: { type: String, required: true },
 
   income: { type: Number, required: true },
+  debt: { type: Number, required: true },
 
   credit: { type: Number, required: true },
 
@@ -22,8 +23,8 @@ const loanSchema = new mongoose.Schema({
   riskCategory: { type: String },
   reasons: { type: [String] },
 
-  user: { type: mongoose.Schema.Types, ObjectId, ref: "User" },
-  createdAt: { type: Date, default: Date.now() },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  createdAt: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model("Loan", loanSchema);

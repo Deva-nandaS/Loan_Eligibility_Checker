@@ -11,19 +11,21 @@ const loanCalculator = (applicant) => {
   const empInfo = EMPLOYMENT_TYPE_MULTIPLIERS.find(
     (e) => applicant.emptype === e.type,
   );
+
+  console.log("empinfo:",empInfo)
   const purposeInfo = LOAN_PURPOSE_MULTIPLIERS.find(
     (p) => applicant.purpose === p.purpose,
   );
 
   const finalRate =
-    rateInfo.rate + empInfo.emptype.rate + purposeInfo.purpose.rate;
+    rateInfo.rate + empInfo.rate + purposeInfo.rate;
 
   const monthlyInterest = finalRate / 100 / 12;
   const first =
     applicant.amount *
     monthlyInterest *
     Math.pow(1 + monthlyInterest, applicant.tenure);
-  const second = Math.pow(1 + monthlyInterest, tenure) - 1;
+  const second = Math.pow(1 + monthlyInterest, applicant.tenure) - 1;
   const emi = first / second;
 
   return {
