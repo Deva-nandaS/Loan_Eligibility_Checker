@@ -15,6 +15,8 @@ export const Apply = () => {
   const [purpose, setPurpose] = useState("Home");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({});
+  const [debt, setDebt] = useState("");
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +58,7 @@ export const Apply = () => {
         age,
         emptype,
         income,
+        debt,
         credit,
         tenure,
         purpose,
@@ -150,6 +153,22 @@ export const Apply = () => {
                 )}
               </div>
 
+              <div>
+                <label className="font-bold mb-1 block">Existing Debt</label>
+                <Input
+                  className="border-2 rounded-lg w-full p-2"
+                  type="number"
+                  placeholder="monthly debt"
+                  value={debt}
+                  onChange={(e) => {
+                    setDebt(e.target.value);
+                    setErrors((p) => ({ ...p, debt: "" }));
+                  }}
+                />
+                {errors.debt && (
+                  <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
+                )}
+              </div>
               <div>
                 <label className="font-bold mb-1 block">Credit Score</label>
                 <Input

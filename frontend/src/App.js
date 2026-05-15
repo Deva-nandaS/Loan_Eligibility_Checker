@@ -18,7 +18,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/admin/admindashboard" element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/applicant/applicantdashboard" element={<PrivateRoute role="applicant"><ApplicantDashboard   /></PrivateRoute>} />
-        <Route path="/applicant/apply" element={<PrivateRoute role="applicant"><Apply /></PrivateRoute>} />  
+        <Route path="/applicant/apply" element={<PrivateRoute role="applicant"><Apply /></PrivateRoute>} /> 
+         
       </Routes>
     </>
   );
