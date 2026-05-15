@@ -40,6 +40,11 @@ const loanEligibility = (applicant) => {
   ) {
     err.push("Must have atleast 1 year at current job");
   }
+  if (applicant.emptype === "Unemployed") {
+  err.push("Unemployed applicants are not eligible");
+}
+
+  
   const rateInfo = INTEREST_RATE_MATRIX.find(
     (r) => applicant.credit >= r.min && applicant.credit <= r.max,
   );

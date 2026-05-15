@@ -12,7 +12,7 @@ const INTEREST_RATE_MATRIX = [
   { min: 750, max: 799, rate: 10.0, category: "Good" },
   { min: 700, max: 749, rate: 12.5, category: "Fair" },
   { min: 650, max: 699, rate: 15.0, category: "Below Average" },
-  { min: 0, max: 649, rate: null, category: "High Risk" },
+  { min: 0, max: 649, rate: 0, category: "High Risk" },
 ];
 
 const EMPLOYMENT_TYPE_MULTIPLIERS = [
