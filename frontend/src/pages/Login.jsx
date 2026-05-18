@@ -64,11 +64,16 @@ export const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label className="font-bold">Password</label>
+              <div className="flex items-center justify-between mt-4">
+              <label className="font-bold">Password</label>
+              <Link to="/forgotpassword" className="text-blue-500">
+                Forgot password?
+              </Link>
+            </div>
             <input
               value={password}
               placeholder="Password"
-              className="border p-2 rounded mb-6" // ✅ more space before button
+              className="border p-2 rounded mb-6" 
               onChange={(e) => setPassword(e.target.value)}
             />
 
