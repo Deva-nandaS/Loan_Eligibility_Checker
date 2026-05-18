@@ -84,7 +84,7 @@ export const Login = () => {
 
         {/* RIGHT IMAGE */}
         <div className="hidden md:flex w-1/2 items-center justify-center bg-gray-50">
-          <img className="w-40" src="/.png" alt="Loan_Eligibility_Checker" />
+          <img className="w-[600px] h-[600px]" src="/loan_logo.png" alt="Loan_Eligibility_Checker" />
         </div>
       </div>
     </div>
