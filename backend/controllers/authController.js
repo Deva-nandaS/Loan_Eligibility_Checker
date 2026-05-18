@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const loan=require("../models/loan.model")
+const loan = require("../models/loan.model");
 
 exports.register = async (req, res) => {
   try {
@@ -80,8 +80,8 @@ exports.login = async (req, res) => {
 };
 
 exports.getAdminDashboard = async (req, res) => {
-    console.log("getAdminDashboard hit"); 
-  console.log("req.user:", req.user); 
+  console.log("getAdminDashboard hit");
+  console.log("req.user:", req.user);
   try {
     const user = await User.findById(req.user.userId).select("-password");
     const userCount = await User.countDocuments({ role: "applicant" });
@@ -92,7 +92,7 @@ exports.getAdminDashboard = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Admin dashboard",
-      data: {user,userCount,loanCount,approvedCount,rejectedCount}
+      data: { user, userCount, loanCount, approvedCount, rejectedCount },
     });
   } catch (error) {
     res.status(500).json({

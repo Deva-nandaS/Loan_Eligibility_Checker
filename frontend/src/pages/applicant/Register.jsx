@@ -43,8 +43,8 @@ export const Register = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* LEFT FORM */}
+  
+<div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
         <div className="w-full md:w-1/2 flex justify-center items-center p-6">
           <form
             onSubmit={handleSubmit}

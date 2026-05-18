@@ -37,12 +37,13 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
         {/* LEFT FORM */}
-        <div className="w-full md:w-1/2 flex justify-center items-center p-6">
+
+        <div className="w-full md:w-1/2 flex justify-center items-center p-10 min-h-[500px]">
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-md flex flex-col"
+            className="w-full max-w-md flex flex-col gap-2" 
           >
             <h4 className="text-2xl font-semibold text-center mb-4">Login</h4>
 
@@ -67,11 +68,15 @@ export const Login = () => {
             <input
               value={password}
               placeholder="Password"
-              className="border p-2 rounded mb-3"
+              className="border p-2 rounded mb-6" // ✅ more space before button
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <button className="bg-black text-white py-2 rounded" type="submit">
+            <button
+              className="bg-black text-white py-2 rounded mt-4"
+              type="submit"
+            >
+              {" "}
               Login
             </button>
           </form>

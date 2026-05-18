@@ -13,3 +13,21 @@ export const createLoan = async (data) => {
   return res.data;
 };
 
+export const getLoanResult = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API_URL}/result/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return res.data;
+};
+
+export const getLoanHistory = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get(`${API_URL}/history`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.data;
+};

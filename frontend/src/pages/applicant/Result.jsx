@@ -1,67 +1,94 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button } from "../../Components/ui/Button";
+import { getLoanResult } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
 
 export const Result = () => {
-  const { state: result } = useLocation();
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  if (!result) {
-    navigate("/applicant/apply");
-    return null;
-  }
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const data = await getLoanResult(id);
+        setResult(data);
+      } catch (err) {
+        navigate("/applicant/apply", { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, [id]);
+
+  if (loading) return <div className="flex h-screen items-center justify-center text-black font-bold">Loading....</div>;
+  if (!result) return null;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1 flex justify-center items-center bg-white p-6">
-        <div className={`w-full max-w-lg rounded-xl shadow-2xl p-8 border-2 
-          ${result.status === "APPROVED" ? "border-green-500" : "border-red-500"}`}>
+      <div className="flex-1 flex justify-center items-center p-6">
+        <div className={`bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg border
+          ${result.eligible ? "border-green-500" : "border-red-500"}`}>
 
-          {result.status === "APPROVED" ? (
-            <>
-              <h2 className="text-green-600 text-3xl font-bold text-center mb-6">✅ APPROVED</h2>
-              <div className="space-y-2">
-                <p><span className="font-bold">Applicant:</span> {result.applicantName}</p>
-                <p><span className="font-bold">Requested Amount:</span> ₹{result.requestedAmount}</p>
-                <p><span className="font-bold">Approved Amount:</span> ₹{result.approvedAmount}</p>
-                <p><span className="font-bold">Annual Interest Rate:</span> {result.annualInterestRate}</p>
-                <p><span className="font-bold">Monthly EMI:</span> ₹{result.monthlyEMI}</p>
-                <p><span className="font-bold">Tenure:</span> {result.tenure}</p>
-                <p><span className="font-bold">Total Payable:</span> ₹{result.totalPayable}</p>
-                <p><span className="font-bold">Total Interest:</span> ₹{result.totalInterestPayable}</p>
-                <p><span className="font-bold">Risk Category:</span> {result.riskCategory}</p>
-                <p><span className="font-bold">Debt Ratio:</span> {result.debtRatio}</p>
-
-                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="font-bold mb-1">Rate Breakdown:</p>
-                  <p>Base Rate: {result.breakdown?.base}%</p>
-                  <p>Employment: {result.breakdown?.employment}%</p>
-                  <p>Purpose: {result.breakdown?.purpose}%</p>
+          {result.eligible ? (
+            <div className="space-y-3">
+              <h4 className="text-2xl text-green-700 font-bold text-center mb-6"> APPROVED</h4>
+              {[
+                ["Applicant", result.name],
+                ["Requested Amount", `${result.amount}`],
+                ["Approved Amount", `${result.amount}`],
+                ["Annual Interest Rate", `${result.interestRate}%`],
+                ["Monthly EMI", `${result.emi}`],
+                ["Total Payable", `${result.totalPayable}`],
+                ["Total Interest Payable", `${result.totalInterestPayable}`],
+                ["Risk Category", result.riskCategory],
+                ["Debt Ratio", result.debtRatio],
+              ].map(([label, value]) => (
+                <div key={label} className="flex justify-between border-b pb-2">
+                  <span className="font-semibold text-gray-600">{label}</span>
+                  <span className="font-medium">{value}</span>
                 </div>
-              </div>
-            </>
+              ))}
+            </div>
           ) : (
-            <>
-              <h2 className="text-red-600 text-3xl font-bold text-center mb-6">❌ REJECTED</h2>
-              <div className="space-y-2">
-                <p><span className="font-bold">Reason:</span> {result.reason}</p>
-                <p><span className="font-bold">Reapply After:</span> {result.reapplyAfter}</p>
-                <div className="mt-4">
-                  <p className="font-bold mb-1">Suggestions:</p>
-                  {result.suggestions?.map((s, i) => (
-                    <p key={i}>• {s}</p>
-                  ))}
-                </div>
+            <div className="space-y-3">
+         
+              <h4 className="text-2xl text-red-700 font-bold text-center mb-6"> REJECTED</h4>
+              <div className="flex justify-between  pb-2">
+                <span className="font-semibold text-gray-600">Reason</span>
+                <span className="font-medium">{result.reasons?.[0]}</span>
               </div>
-            </>
+              <div className="flex justify-between pb-2">
+                <span className="font-semibold text-gray-600">Reapply After</span>
+                <span className="font-medium">90 days</span>
+              </div>
+              <div className="mt-2">
+                <p className="font-semibold text-gray-600 mb-2">Suggestions</p>
+                {result.suggestions?.map((s, i) => (
+                  <p key={i} className="text-sm text-gray-600">• {s}</p>
+                ))}
+              </div>
+            </div>
           )}
 
-          <button
-            onClick={() => navigate("/applicant/apply")}
-            className="mt-6 w-full bg-gray-900 text-white font-bold rounded-lg py-2"
-          >
-            Apply Again
-          </button>
+          <div className="flex gap-4 mt-8">
+            <Button
+              className="flex-1 bg-gray-100 border text-black rounded-lg font-semibold py-2 hover:bg-gray-200"
+              onClick={() => navigate("/applicant/apply", { replace: true })}
+            >
+              Apply Again
+            </Button>
+            <Button
+              className="flex-1 bg-black text-white rounded-lg font-semibold py-2 hover:bg-gray-800"
+              onClick={() => navigate("/applicant/applicantdashboard", { replace: true })}
+            >
+              Done
+            </Button>
+          </div>
         </div>
       </div>
     </div>

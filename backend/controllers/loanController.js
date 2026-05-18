@@ -18,15 +18,18 @@ const getLoanResult = async (req, res) => {
 const getSuggestions = (reasons) => {
   const suggestions = [];
   reasons.forEach((r) => {
-    if (r.includes("income"))    suggestions.push("Increase your monthly income");
-    if (r.includes("credit"))    suggestions.push("Improve your credit score");
-    if (r.includes("debt"))      suggestions.push("Reduce existing debts");
-    if (r.includes("amount"))    suggestions.push("Apply for a lower loan amount");
-    if (r.includes("tenure"))    suggestions.push("Complete at least 1 year at current job");
-    if (r.includes("Unemployed") || r.includes("unemployed")) suggestions.push("Be an employ first"); 
+    if (r.includes("income")) suggestions.push("Increase your monthly income");
+    if (r.includes("credit")) suggestions.push("Improve your credit score");
+    if (r.includes("debt")) suggestions.push("Reduce existing debts");
+    if (r.includes("amount")) suggestions.push("Apply for a lower loan amount");
+    if (r.includes("tenure"))
+      suggestions.push("Complete at least 1 year at current job");
+    if (r.includes("Unemployed") || r.includes("unemployed"))
+      suggestions.push("Be an employ first");
   });
   return suggestions;
 };
+
 const applyLoan = async (req, res) => {
   try {
     const applicant = {
@@ -116,4 +119,26 @@ const getLoanHistory = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-module.exports = { applyLoan, getLoanResult, getLoanHistory };
+
+const getApplication = async (req, res) => {
+  try {
+    const applications = await Loan.find();
+    return res.status(200).json(applications);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+const getApplicationById = async (req, res) => {
+  try {
+    const applicationDetails = await Loan.findById(req.params.id);
+    return res.status(200).json(applicationDetails);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = { applyLoan, getLoanResult, getLoanHistory, getApplication,getApplicationById };
+
+

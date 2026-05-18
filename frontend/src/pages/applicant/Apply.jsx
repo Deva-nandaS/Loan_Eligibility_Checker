@@ -4,6 +4,7 @@ import { Button } from "../../Components/ui/Button";
 import { Sidebar } from "../../Components/Sidebar";
 import { toast } from "react-toastify";
 import { createLoan } from "../../api/apply";
+import { useNavigate } from "react-router-dom";
 
 export const Apply = () => {
   const [name, setName] = useState("");
@@ -12,11 +13,14 @@ export const Apply = () => {
   const [income, setIncome] = useState("");
   const [credit, setCredit] = useState("");
   const [tenure, setTenure] = useState("");
+  const [loanTenure, setloanTenure] = useState("");
+
   const [purpose, setPurpose] = useState("Home");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({});
   const [debt, setDebt] = useState("");
-  
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,27 +50,45 @@ export const Apply = () => {
       newErrors.tenure = "Minimum 1 year tenure required";
     }
 
+    if (!loanTenure) {
+      newErrors.loanTenure = "Loan tenure is required";
+    }
+
     if (!amount) {
       newErrors.amount = "Amount is required";
     } else if (Number(amount) > Number(income) * 10) {
       newErrors.amount = "Amount cannot exceed 10x income";
     }
 
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      toast.error("Please fix the errors before submitting");
+      return;
+    }
+
     try {
+      setLoading(true);
       const res = await createLoan({
         name,
         age,
+        amount,
         emptype,
         income,
         debt,
         credit,
         tenure,
+        loanTenure,
         purpose,
-        amount,
       });
+      console.log("res:", res);
       toast.success("Submitted");
+      navigate(`/applicant/result/${res.loanId}`, { replace: true });
     } catch (err) {
       toast.error(err?.response?.data?.message || "Submission failed");
+      const errdata = err?.response?.data;
+      navigate(`/applicant/result/${errdata.loanId}`, { replace: true });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,16 +144,73 @@ export const Apply = () => {
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">Employment Type</label>
+                <label className="font-bold mb-1 block">Amount</label>
+                <Input
+                  className="border-2 rounded-lg w-full p-2"
+                  type="number"
+                  placeholder="amount"
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                    setErrors((p) => ({ ...p, amount: "" }));
+                  }}
+                  required
+                />
+                {errors.amount && (
+                  <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="font-bold mb-1 block">Loan tenure</label>
+                <Input
+                  className="border-2 rounded-lg w-full p-2"
+                  type="number"
+                  placeholder="Loan Tenure"
+                  value={loanTenure}
+                  onChange={(e) => {
+                    setloanTenure(e.target.value);
+                    setErrors((p) => ({ ...p, loanTenure: "" }));
+                  }}
+                  required
+                />
+                {errors.loanTenure && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.loanTenure}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="font-bold mb-1 block">Credit Score</label>
+                <Input
+                  className="border-2 rounded-lg w-full p-2"
+                  type="number"
+                  placeholder="credit score"
+                  value={credit}
+                  onChange={(e) => {
+                    setCredit(e.target.value);
+                    setErrors((p) => ({ ...p, credit: "" }));
+                  }}
+                  required
+                />
+                {errors.credit && (
+                  <p className="text-red-500 text-xs mt-1">{errors.credit}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="font-bold mb-1 block">Loan Purpose</label>
                 <select
                   className="border-2 rounded-lg w-full p-2"
-                  value={emptype}
-                  onChange={(e) => setEmptype(e.target.value)}
+                  value={purpose}
+                  onChange={(e) => setPurpose(e.target.value)}
                 >
-                  <option>Salaried</option>
-                  <option>Self Employed</option>
-                  <option>Freelance</option>
-                  <option>Unemployed</option>
+                  <option>Home</option>
+                  <option>Education</option>
+                  <option>Vehicle</option>
+                  <option>Business</option>
+                  <option>Personal</option>
                 </select>
               </div>
 
@@ -170,25 +249,23 @@ export const Apply = () => {
                 )}
               </div>
               <div>
-                <label className="font-bold mb-1 block">Credit Score</label>
-                <Input
+                <label className="font-bold mb-1 block">Employment Type</label>
+                <select
                   className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="credit score"
-                  value={credit}
-                  onChange={(e) => {
-                    setCredit(e.target.value);
-                    setErrors((p) => ({ ...p, credit: "" }));
-                  }}
-                  required
-                />
-                {errors.credit && (
-                  <p className="text-red-500 text-xs mt-1">{errors.credit}</p>
-                )}
+                  value={emptype}
+                  onChange={(e) => setEmptype(e.target.value)}
+                >
+                  <option>Salaried</option>
+                  <option>Self Employed</option>
+                  <option>Freelance</option>
+                  <option>Unemployed</option>
+                </select>
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">Job Tenure</label>
+                <label className="font-bold mb-1 block">
+                  Years of Experience
+                </label>
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
@@ -205,45 +282,13 @@ export const Apply = () => {
                 )}
               </div>
 
-              <div>
-                <label className="font-bold mb-1 block">Loan Purpose</label>
-                <select
-                  className="border-2 rounded-lg w-full p-2"
-                  value={purpose}
-                  onChange={(e) => setPurpose(e.target.value)}
-                >
-                  <option>Home</option>
-                  <option>Education</option>
-                  <option>Vehicle</option>
-                  <option>Business</option>
-                  <option>Personal</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="font-bold mb-1 block">Amount</label>
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="amount"
-                  value={amount}
-                  onChange={(e) => {
-                    setAmount(e.target.value);
-                    setErrors((p) => ({ ...p, amount: "" }));
-                  }}
-                  required
-                />
-                {errors.amount && (
-                  <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
-                )}
-              </div>
-
               <div className="col-span-2">
                 <Button
+                  disabled={loading}
                   type="submit"
                   className="w-full bg-gray-900 text-white font-bold rounded-lg py-2"
                 >
-                  SUBMIT
+                  {loading ? "Submitting..." : "SUBMIT"}
                 </Button>
               </div>
             </div>
