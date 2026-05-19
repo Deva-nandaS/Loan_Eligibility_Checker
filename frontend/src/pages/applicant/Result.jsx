@@ -24,19 +24,28 @@ export const Result = () => {
     fetch();
   }, [id]);
 
-  if (loading) return <div className="flex h-screen items-center justify-center text-black font-bold">Loading....</div>;
+  if (loading)
+    return (
+      <div className="flex h-screen items-center justify-center text-black font-bold">
+        Loading....
+      </div>
+    );
   if (!result) return null;
 
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
       <div className="flex-1 flex justify-center items-center p-6">
-        <div className={`bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg border
-          ${result.eligible ? "border-green-500" : "border-red-500"}`}>
-
+        <div
+          className={`bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg border
+          ${result.eligible ? "border-green-500" : "border-red-500"}`}
+        >
           {result.eligible ? (
             <div className="space-y-3">
-              <h4 className="text-2xl text-green-700 font-bold text-center mb-6"> APPROVED</h4>
+              <h4 className="text-2xl text-green-700 font-bold text-center mb-6">
+                {" "}
+                APPROVED
+              </h4>
               {[
                 ["Applicant", result.name],
                 ["Requested Amount", `${result.amount}`],
@@ -56,20 +65,26 @@ export const Result = () => {
             </div>
           ) : (
             <div className="space-y-3">
-         
-              <h4 className="text-2xl text-red-700 font-bold text-center mb-6"> REJECTED</h4>
+              <h4 className="text-2xl text-red-700 font-bold text-center mb-6">
+                {" "}
+                REJECTED
+              </h4>
               <div className="flex justify-between  pb-2">
                 <span className="font-semibold text-gray-600">Reason</span>
                 <span className="font-medium">{result.reasons?.[0]}</span>
               </div>
               <div className="flex justify-between pb-2">
-                <span className="font-semibold text-gray-600">Reapply After</span>
+                <span className="font-semibold text-gray-600">
+                  Reapply After
+                </span>
                 <span className="font-medium">90 days</span>
               </div>
               <div className="mt-2">
                 <p className="font-semibold text-gray-600 mb-2">Suggestions</p>
                 {result.suggestions?.map((s, i) => (
-                  <p key={i} className="text-sm text-gray-600">• {s}</p>
+                  <p key={i} className="text-sm text-gray-600">
+                    • {s}
+                  </p>
                 ))}
               </div>
             </div>
@@ -77,14 +92,16 @@ export const Result = () => {
 
           <div className="flex gap-4 mt-8">
             <Button
-              className="flex-1 bg-gray-100 border text-black rounded-lg font-semibold py-2 hover:bg-gray-200"
+              className="flex-1 bg-teal-800 border text-white rounded-lg font-semibold py-2"
               onClick={() => navigate("/applicant/apply", { replace: true })}
             >
               Apply Again
             </Button>
             <Button
-              className="flex-1 bg-black text-white rounded-lg font-semibold py-2 hover:bg-gray-800"
-              onClick={() => navigate("/applicant/applicantdashboard", { replace: true })}
+              className="flex-1 bg-teal-800 text-white rounded-lg font-semibold py-2 "
+              onClick={() =>
+                navigate("/applicant/applicantdashboard", { replace: true })
+              }
             >
               Done
             </Button>

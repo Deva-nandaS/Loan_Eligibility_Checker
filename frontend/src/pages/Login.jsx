@@ -78,7 +78,7 @@ export const Login = () => {
             />
 
             <button
-              className="bg-black text-white py-2 rounded mt-4"
+              className="bg-teal-800 text-white py-2 rounded mt-4"
               type="submit"
             >
               {" "}

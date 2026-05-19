@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { getLoanHistory } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
+import { IoCloseSharp } from "react-icons/io5";
 
-
-export const History = () => {
+export const History = ({onClose}) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showProblem, setShowProblem] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -18,6 +20,8 @@ export const History = () => {
       } finally {
         setLoading(false);
       }
+      console.log("history:", history);
+      console.log("loading:", loading);
     };
     fetch();
   }, []);
@@ -48,8 +52,10 @@ export const History = () => {
                     "Interest Paid",
                     "Loan Tenure",
                     "Status",
-                  ].map((h)=>(
-                    <th key={h} className="p-6 border border-gray-400">{h}</th>
+                  ].map((h) => (
+                    <th key={h} className="p-6 border border-gray-400">
+                      {h}
+                    </th>
                   ))}
                 </tr>
               </thead>
@@ -66,7 +72,6 @@ export const History = () => {
                     <tr
                       key={item._id}
                       className="hover:bg-gray-50 cursor-pointer"
-                      
                     >
                       <td className="p-4 border border-gray-300">
                         {item.amount}
@@ -94,7 +99,14 @@ export const History = () => {
                       <td className="p-4 border border-gray-300">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold
+                         
                           ${item.eligible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                          onClick={() => {
+                            if (!item.eligible) {
+                              setSelectedItem(item);
+                              setShowProblem(true);
+                            }
+                          }}
                         >
                           {item.eligible ? "APPROVED" : "REJECTED"}
                         </span>
@@ -119,6 +131,31 @@ export const History = () => {
           </div>
         </div>
       </div>
+      {showProblem && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="border bg-white shadow-2xl w-96 h-56 rounded-xl">
+            <div className="flex flex-col p-3 gap-3">
+              <div className="flex justify-between items-center border-b rounded-t-lg">
+                <h2 className=" font-bold">Why?</h2>
+                <button
+                  onClick={()=>setShowProblem(false)}
+                  className="p-2 bg-red-700 text-white rounded hover:bg-red-800"
+                >
+                  <IoCloseSharp />
+                </button>
+              </div>
+              <div className="flex justify-between">
+                <label className="font-semibold">Reason:</label>
+                <p>{selectedItem?.reasons?.join(",")}</p>
+              </div>
+              <div className="flex justify-between">
+                <label className="font-semibold">Suggestions:</label>
+                <p>{selectedItem?.suggestions?.join(",")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

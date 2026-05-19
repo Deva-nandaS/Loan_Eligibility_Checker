@@ -12,7 +12,7 @@ const getLoanResult = async (req, res) => {
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
-  }
+  }1
 };
 
 const getSuggestions = (reasons) => {
@@ -64,7 +64,7 @@ const applyLoan = async (req, res) => {
     }
 
     const calc = loanCalculator(applicant);
-    const tenureMonths = applicant.loanTenure * 12;
+ 
     const debtRatio = (applicant.debt / applicant.income).toFixed(2);
     const totalPayable = Math.round(calc.emi * tenureMonths);
     const totalInterestPayable = totalPayable - applicant.amount;
@@ -88,8 +88,8 @@ const applyLoan = async (req, res) => {
       approvedAmount: applicant.amount,
       annualInterestRate: `${calc.finalRate}%`,
       monthlyEMI: calc.emi,
-      tenure: `${applicant.tenure} months`,
-      tenure: `${tenureMonths} months`,
+      tenure: `${applicant.tenure} year`,
+      loanTenure: `${applicant.loanTenure} months`,
       totalPayable,
       totalInterestPayable,
       riskCategory: eligibility.riskCategory,
@@ -129,7 +129,6 @@ const getApplication = async (req, res) => {
   }
 };
 
-
 const getApplicationById = async (req, res) => {
   try {
     const applicationDetails = await Loan.findById(req.params.id);
@@ -139,6 +138,25 @@ const getApplicationById = async (req, res) => {
   }
 };
 
-module.exports = { applyLoan, getLoanResult, getLoanHistory, getApplication,getApplicationById };
+const updateOverride = async (req, res) => {
+  try {
+    const { eligible, reason, suggestions } = req.body;
+    const loan = await Loan.findByIdAndUpdate(
+      req.params.id,
+      { eligible, reasons: [reason], suggestions: [suggestions] },
+      { returnDocument: "after" },
+    );
+    return res.status(200).json(loan);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
-
+module.exports = {
+  applyLoan,
+  getLoanResult,
+  getLoanHistory,
+  getApplication,
+  getApplicationById,
+  updateOverride,
+};

@@ -13,7 +13,8 @@ import { History } from "./pages/applicant/History";
 import { ViewApplication } from "./pages/admin/ViewApplication";
 import { ApplicationDetail } from "./pages/admin/ApplicationDetail";
 import { Metrics } from "./pages/admin/Metrics";
-import { ForgotPassword } from "./pages/ForgotPassword";
+
+import { ChangePassword } from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Login />} />
-         <Route path="/forgotpassword" element={<ForgotPassword />} />
+         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/admin/admindashboard" element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/applicant/applicantdashboard" element={<PrivateRoute role="applicant"><ApplicantDashboard   /></PrivateRoute>} />
         <Route path="/applicant/apply" element={<PrivateRoute role="applicant"><Apply /></PrivateRoute>} /> 

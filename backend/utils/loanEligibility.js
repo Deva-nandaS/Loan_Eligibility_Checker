@@ -43,7 +43,6 @@ const loanEligibility = (applicant) => {
   if (applicant.emptype === "Unemployed") {
   err.push("Unemployed applicants are not eligible");
 }
-
   
   const rateInfo = INTEREST_RATE_MATRIX.find(
     (r) => applicant.credit >= r.min && applicant.credit <= r.max,

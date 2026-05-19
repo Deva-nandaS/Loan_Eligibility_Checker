@@ -38,3 +38,17 @@ export const getApplicationById = async (id) => {
   );
   return response.data;
 };
+
+export const updateOverride = async (id,eligible,reason,suggestion) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.put(
+    `http://localhost:5000/api/loan/override/${id}`,
+    {eligible,reason,suggestion},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return response.data;
+};

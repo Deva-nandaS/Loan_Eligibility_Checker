@@ -1,14 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Sidebar } from "../../Components/Sidebar";
-import { getApplicationById } from "../../api/admindashboard";
+import { getApplicationById ,updateOverride} from "../../api/admindashboard";
 import { useState } from "react";
 import { Button } from "../../Components/ui/Button";
 import { useEffect } from "react";
 
 export const ApplicationDetail = () => {
   const [showDetails, setShowDetails] = useState(null);
+  const [showOverride, setShowOverride] = useState(false);
+  const [reason, setReason] = useState("");
+  const [suggestion, setSuggestion] = useState("");
+
   const navigate = useNavigate();
   const { id } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,6 +27,24 @@ export const ApplicationDetail = () => {
     };
     fetchData();
   }, [id]);
+
+  const handleOverride = () => setShowOverride(true);
+  const handleConfirm = async () => {
+    try{
+  const response=await updateOverride(id, !showDetails.eligible, reason, suggestion);
+       console.log("override response:", response);
+  setShowDetails({
+      ...showDetails,
+      eligible: !showDetails.eligible,
+      reason,
+      suggestion,
+    });
+      setShowOverride(false);
+  }
+  catch (err) {
+    console.log("override error:", err);
+  }
+  };
 
   if (!showDetails)
     return (
@@ -41,7 +64,7 @@ export const ApplicationDetail = () => {
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
               {[
                 ["Applicant", showDetails.name],
-                ["Status:", showDetails.eligible?"Approved":"Rejected"],
+                ["Status:", showDetails.eligible ? "Approved" : "Rejected"],
                 ["Age", showDetails.age],
                 ["Income", showDetails.income],
                 ["Credit Score:", showDetails.credit],
@@ -113,11 +136,48 @@ export const ApplicationDetail = () => {
             </Button>
             <Button
               className="flex-1 bg-black text-white rounded-lg font-semibold py-2 hover:bg-gray-800"
-              onClick={() => navigate("/applicant/", { replace: true })}
+              onClick={handleOverride}
             >
               Override
             </Button>
           </div>
+
+          {showOverride && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="border bg-white shadow-2xl w-96 h-56 rounded-xl">
+                <div className="flex flex-col p-3 gap-3">
+                  <h2 className="font-bold border-b">Status Updation</h2>
+                  <div className="flex flex-col">
+                    <label className="font-semibold">Reason:</label>
+                    <input
+                      type="text"
+                      value={reason}
+                      placeholder="Enter reason"
+                      className="border p-2 rounded mb-3"
+                      onChange={(e) => setReason(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="font-semibold">Suggestions:</label>
+                    <input
+                      type="text"
+                      value={suggestion}
+                      placeholder="Enter suggestion"
+                      className="border p-2 rounded mb-3"
+                      onChange={(e) => setSuggestion(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <div className="border text-white bg-black rounded-md p-2 ">
+                      <Button className="font-bold" onClick={handleConfirm}>
+                        Confirm
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -17,6 +17,22 @@ export const loginUser = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, {
     email,
     password,
+  },
+
+);
+  return response.data;
+};
+
+export const changePassword = async (password, newPassword) => {
+  const token = localStorage.getItem("token");
+  const response = await axios.put(`${API_URL}/changePassword`, {
+    password,
+    newPassword,
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
 
   return response.data;

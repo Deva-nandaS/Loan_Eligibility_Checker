@@ -5,6 +5,7 @@ import { Sidebar } from "../../Components/Sidebar";
 import { toast } from "react-toastify";
 import { createLoan } from "../../api/apply";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 export const Apply = () => {
   const [name, setName] = useState("");
@@ -14,12 +15,12 @@ export const Apply = () => {
   const [credit, setCredit] = useState("");
   const [tenure, setTenure] = useState("");
   const [loanTenure, setloanTenure] = useState("");
-
   const [purpose, setPurpose] = useState("Home");
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({});
   const [debt, setDebt] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeField, setActiveField] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -93,22 +94,23 @@ export const Apply = () => {
   };
 
   return (
-    <div className=" flex flex-col md:flex-row h-screen">
-      <Sidebar />
-      <div className="w-full flex justify-center items-center bg-white  ">
-        <form
-          onSubmit={handleSubmit}
-          className=" flex flex-col rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-md mx-4"
-        >
-          <div className="max-w-sm mx-auto w-full">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
+  <Sidebar />
+  <div className="w-full flex justify-center items-center bg-gray-50 overflow-y-auto py-8 px-4">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
+    >
+          <div className="w-full">
             <h4 className=" text-black text-2xl sm:text-3xl mb-4 font-semibold text-center">
               Loan Application Form
             </h4>
 
             <div className="border-b my-10"></div>
-            <div className="grid grid-cols-2 gap-4">
+         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="font-bold mb-1 block">Name</label>
+
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="text"
@@ -144,11 +146,11 @@ export const Apply = () => {
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">Amount</label>
+                <label className="font-bold mb-1 block">Loan Amount</label>
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="amount"
+                  placeholder="eg:50,000"
                   value={amount}
                   onChange={(e) => {
                     setAmount(e.target.value);
@@ -162,11 +164,27 @@ export const Apply = () => {
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">Loan tenure</label>
+                <div className=" relative flex items-center gap-1.5">
+                  <label className="font-bold mb-1 block">
+                    Loan tenure(in months)
+                  </label>
+                  <AiOutlineInfoCircle
+                    size={14}
+                    className="text-gray-400 cursor-pointer"
+                    onMouseEnter={() => setActiveField("loanTenure")}
+                    onMouseLeave={() => setActiveField(null)}
+                  />
+                  {activeField === "loanTenure" && (
+                    <div className="absolute bg-white rounded-md shadow top-10 z-10 border p-2 w-48 text-xs">
+                      <p>Enter how many months to repay the loan.</p>
+                    </div>
+                  )}
+                </div>
+
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="Loan Tenure"
+                  placeholder="eg: 12"
                   value={loanTenure}
                   onChange={(e) => {
                     setloanTenure(e.target.value);
@@ -186,7 +204,7 @@ export const Apply = () => {
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="credit score"
+                  placeholder="eg:700"
                   value={credit}
                   onChange={(e) => {
                     setCredit(e.target.value);
@@ -215,11 +233,11 @@ export const Apply = () => {
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">Income</label>
+                <label className="font-bold mb-1 block">Monthly Income</label>
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="income"
+                  placeholder="eg:20,000"
                   value={income}
                   onChange={(e) => {
                     setIncome(e.target.value);
@@ -237,7 +255,7 @@ export const Apply = () => {
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="monthly debt"
+                  placeholder="eg:10,000"
                   value={debt}
                   onChange={(e) => {
                     setDebt(e.target.value);
@@ -263,13 +281,28 @@ export const Apply = () => {
               </div>
 
               <div>
-                <label className="font-bold mb-1 block">
-                  Years of Experience
-                </label>
+                <div className=" relative flex items-center gap-1.5">
+                  <label className="font-bold mb-1 block">
+                    {" "}
+                    Years of Experience
+                  </label>
+                  <AiOutlineInfoCircle
+                    size={14}
+                    className="text-gray-400 cursor-pointer"
+                    onMouseEnter={() => setActiveField("experience")}
+                    onMouseLeave={() => setActiveField(null)}
+                  />
+                  {activeField === "experience" && (
+                    <div className="absolute bg-white rounded-md shadow top-10 z-10 border p-2 w-48 text-xs">
+                      <p>How many years of experience in your current job</p>
+                    </div>
+                  )}
+                </div>
+
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
-                  placeholder="job tenure"
+                  placeholder="eg:2"
                   value={tenure}
                   onChange={(e) => {
                     setTenure(e.target.value);
@@ -286,7 +319,7 @@ export const Apply = () => {
                 <Button
                   disabled={loading}
                   type="submit"
-                  className="w-full bg-gray-900 text-white font-bold rounded-lg py-2"
+                  className="w-full bg-teal-800 text-white font-bold rounded-lg py-2"
                 >
                   {loading ? "Submitting..." : "SUBMIT"}
                 </Button>
