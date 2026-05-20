@@ -13,7 +13,6 @@ const getLoanResult = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
-  
 };
 const getSuggestions = (reasons) => {
   const suggestions = [];
@@ -100,7 +99,6 @@ const applyLoan = async (req, res) => {
       },
     });
   } catch (err) {
-  
     return res.status(500).json({ message: err.message });
   }
 };
@@ -110,7 +108,7 @@ const getLoanHistory = async (req, res) => {
     const loans = await Loan.find({ user: req.user.userId }).sort({
       createdAt: -1,
     });
-  
+
     return res.status(200).json(loans);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -141,7 +139,7 @@ const updateOverride = async (req, res) => {
     const loan = await Loan.findByIdAndUpdate(
       req.params.id,
       { eligible, reasons: [reason], suggestions: [suggestions] },
-      { new:true},
+      { new: true },
     );
     return res.status(200).json(loan);
   } catch (err) {
