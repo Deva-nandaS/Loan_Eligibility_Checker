@@ -2,7 +2,7 @@ export const Button = ({
   children,
   onClick,
   type = "button",
-  className = "",
+  className = "bg-teal-900",
 }) => {
   return (
     <button type={type} onClick={onClick} className={className}>

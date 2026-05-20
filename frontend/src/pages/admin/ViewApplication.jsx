@@ -33,7 +33,10 @@ export const ViewApplication = () => {
               <thead className="bg-gray-50 text-gray-600 uppercase">
                 <tr>
                   {["Name", "Amount", "Status", "Actions"].map((a) => (
-                    <th key={a} className="p-4 border border-gray-400">
+                    <th
+                      key={a}
+                      className="p-4 border border-gray-400 text-center"
+                    >
                       {a}
                     </th>
                   ))}
@@ -66,7 +69,7 @@ export const ViewApplication = () => {
 
                       <td className="p-4 border border-gray-300 text-center">
                         <Button
-                          className="text-white bg-black p-3 rounded-lg mr-5"
+                          className="text-white bg-teal-800 px-6 py-2 rounded-lg mr-5"
                           onClick={() =>
                             navigate(`/admin/applications/${item._id}`, {
                               replace: true,

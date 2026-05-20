@@ -43,7 +43,7 @@ export const Login = () => {
         <div className="w-full md:w-1/2 flex justify-center items-center p-10 min-h-[500px]">
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-md flex flex-col gap-2" 
+            className="w-full max-w-md flex flex-col gap-2"
           >
             <h4 className="text-2xl font-semibold text-center mb-4">Login</h4>
 
@@ -64,7 +64,7 @@ export const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
 
-              <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center justify-between mt-4">
               <label className="font-bold">Password</label>
               <Link to="/forgotpassword" className="text-blue-500">
                 Forgot password?
@@ -73,7 +73,7 @@ export const Login = () => {
             <input
               value={password}
               placeholder="Password"
-              className="border p-2 rounded mb-6" 
+              className="border p-2 rounded mb-6"
               onChange={(e) => setPassword(e.target.value)}
             />
 
@@ -89,7 +89,11 @@ export const Login = () => {
 
         {/* RIGHT IMAGE */}
         <div className="hidden md:flex w-1/2 items-center justify-center bg-gray-50">
-          <img className="w-[600px] h-[600px]" src="/loan_logo.png" alt="Loan_Eligibility_Checker" />
+          <img
+            className="w-[600px] h-[600px]"
+            src="/"
+            alt="Loan_Eligibility_Checker"
+          />
         </div>
       </div>
     </div>

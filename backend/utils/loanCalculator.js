@@ -15,16 +15,15 @@ const loanCalculator = (applicant) => {
     (p) => applicant.purpose === p.purpose,
   );
 
-  const finalRate =
-    rateInfo.rate + empInfo.rate + purposeInfo.rate;
+  const finalRate = rateInfo.rate + empInfo.rate + purposeInfo.rate;
 
   const monthlyInterest = finalRate / 100 / 12;
-  const tenureMonths = applicant.loanTenure * 12;
+  const loanTenure = applicant.loanTenure;
   const first =
     applicant.amount *
     monthlyInterest *
-    Math.pow(1 + monthlyInterest, tenureMonths);
-  const second = Math.pow(1 + monthlyInterest, tenureMonths) - 1;
+    Math.pow(1 + monthlyInterest, loanTenure);
+  const second = Math.pow(1 + monthlyInterest, loanTenure) - 1;
   const emi = first / second;
 
   return {

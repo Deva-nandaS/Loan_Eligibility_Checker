@@ -12,7 +12,8 @@ const getLoanResult = async (req, res) => {
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
-  }1
+  }
+  1;
 };
 
 const getSuggestions = (reasons) => {
@@ -64,9 +65,9 @@ const applyLoan = async (req, res) => {
     }
 
     const calc = loanCalculator(applicant);
- 
+
     const debtRatio = (applicant.debt / applicant.income).toFixed(2);
-    const totalPayable = Math.round(calc.emi * tenureMonths);
+    const totalPayable = Math.round(calc.emi * applicant.loanTenure);
     const totalInterestPayable = totalPayable - applicant.amount;
 
     const loan = await Loan.create({

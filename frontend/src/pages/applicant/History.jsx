@@ -3,7 +3,7 @@ import { getLoanHistory } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
 import { IoCloseSharp } from "react-icons/io5";
 
-export const History = ({onClose}) => {
+export const History = ({ onClose }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showProblem, setShowProblem] = useState(false);
@@ -94,7 +94,7 @@ export const History = ({onClose}) => {
                           : "N/A"}
                       </td>
                       <td className="p-4 border border-gray-300">
-                        {item.loanTenure ? `${item.loanTenure} year` : "N/A"}
+                        {item.loanTenure ? `${item.loanTenure} months` : "N/A"}
                       </td>
                       <td className="p-4 border border-gray-300">
                         <span
@@ -138,7 +138,7 @@ export const History = ({onClose}) => {
               <div className="flex justify-between items-center border-b rounded-t-lg">
                 <h2 className=" font-bold">Why?</h2>
                 <button
-                  onClick={()=>setShowProblem(false)}
+                  onClick={() => setShowProblem(false)}
                   className="p-2 bg-red-700 text-white rounded hover:bg-red-800"
                 >
                   <IoCloseSharp />
