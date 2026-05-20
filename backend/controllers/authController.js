@@ -38,33 +38,6 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.changePassword = async (req, res) => {
-  try {
-    const { password, newPassword } = req.body;
-
-    const user = await User.findById(req.user.userId);
-    if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found", data: null });
-    }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Incorrect current password" });
-    }
-
-    user.password = await bcrypt.hash(newPassword, 10);
-    await user.save();
-    res.status(200).json({
-      success: true,
-      message: "Password updated ",
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message, data: null });
-  }
-};
 
 exports.login = async (req, res) => {
   try {
@@ -107,9 +80,37 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.changePassword = async (req, res) => {
+  try {
+    const { password, newPassword } = req.body;
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found", data: null });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect current password" });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.status(200).json({
+      success: true,
+      message: "Password updated ",
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message, data: null });
+  }
+};
+
+
 exports.getAdminDashboard = async (req, res) => {
-  console.log("getAdminDashboard hit");
-  console.log("req.user:", req.user);
+
   try {
     const user = await User.findById(req.user.userId).select("-password");
     const userCount = await User.countDocuments({ role: "applicant" });

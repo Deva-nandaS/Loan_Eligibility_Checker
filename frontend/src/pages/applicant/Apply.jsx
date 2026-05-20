@@ -81,7 +81,6 @@ export const Apply = () => {
         loanTenure,
         purpose,
       });
-      console.log("res:", res);
       toast.success("Submitted");
       navigate(`/applicant/result/${res.loanId}`, { replace: true });
     } catch (err) {
@@ -93,21 +92,38 @@ export const Apply = () => {
     }
   };
 
+  const isFormValid =
+    !!name &&
+    !!age &&
+    Number(age) >= 21 &&
+    Number(age) <= 65 &&
+    !!income &&
+    Number(income) >= 15000 &&
+    !!credit &&
+    Number(credit) >= 650 &&
+    !!tenure &&
+    (emptype !== "Salaried" || Number(tenure) >= 1) &&
+    !!loanTenure &&
+    !!amount &&
+    Number(amount) <= Number(income) * 10;
+
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
-  <Sidebar />
-  <div className="w-full flex justify-center items-center bg-gray-50 overflow-y-auto py-8 px-4">
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col rounded-xl shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
-    >
-          <div className="w-full">
-            <h4 className=" text-black text-2xl sm:text-3xl mb-4 font-semibold text-center">
-              Loan Application Form
-            </h4>
+      <Sidebar />
+      <div className="w-full flex justify-center items-center  bg-gray-50 overflow-y-auto py-8 px-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col rounded-xl  border-teal-800 border shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
+        >
+          <div className="w-full ">
+            <div className="flex border-b-teal-800  border-b items-center justify-center ">
+              {" "}
+              <h4 className=" text-black text-3xl mb-5sm:text-3xl mb-4 font-semibold  text-center">
+                Loan Application Form
+              </h4>
+            </div>
 
-            <div className="border-b my-10"></div>
-         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-7">
               <div>
                 <label className="font-bold mb-1 block">Name</label>
 
@@ -118,7 +134,11 @@ export const Apply = () => {
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setErrors((p) => ({ ...p, name: "" }));
+                    if (!e.target.value) {
+                      setErrors((p) => ({ ...p, name: "Name is required" }));
+                    } else {
+                      setErrors((p) => ({ ...p, name: "" }));
+                    }
                   }}
                   required
                 />
@@ -136,7 +156,18 @@ export const Apply = () => {
                   value={age}
                   onChange={(e) => {
                     setAge(e.target.value);
-                    setErrors((p) => ({ ...p, age: "" }));
+                    if (
+                      !e.target.value ||
+                      e.target.value < 21 ||
+                      e.target.value > 65
+                    ) {
+                      setErrors((p) => ({
+                        ...p,
+                        age: "Age must be between 21 and 65",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, age: "" }));
+                    }
                   }}
                   required
                 />
@@ -154,7 +185,17 @@ export const Apply = () => {
                   value={amount}
                   onChange={(e) => {
                     setAmount(e.target.value);
-                    setErrors((p) => ({ ...p, amount: "" }));
+                    if (
+                      !e.target.value ||
+                      Number(e.target.value) > Number(income) * 10
+                    ) {
+                      setErrors((p) => ({
+                        ...p,
+                        amount: "Amount cannot exceed 10x income",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, amount: "" }));
+                    }
                   }}
                   required
                 />
@@ -188,7 +229,14 @@ export const Apply = () => {
                   value={loanTenure}
                   onChange={(e) => {
                     setloanTenure(e.target.value);
-                    setErrors((p) => ({ ...p, loanTenure: "" }));
+                    if (!e.target.value) {
+                      setErrors((p) => ({
+                        ...p,
+                        loanTenure: "Loan tenure is required",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, loanTenure: "" }));
+                    }
                   }}
                   required
                 />
@@ -208,7 +256,14 @@ export const Apply = () => {
                   value={credit}
                   onChange={(e) => {
                     setCredit(e.target.value);
-                    setErrors((p) => ({ ...p, credit: "" }));
+                    if (!e.target.value || Number(e.target.value) < 650) {
+                      setErrors((p) => ({
+                        ...p,
+                        credit: "Minimum credit score is 650",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, credit: "" }));
+                    }
                   }}
                   required
                 />
@@ -241,7 +296,14 @@ export const Apply = () => {
                   value={income}
                   onChange={(e) => {
                     setIncome(e.target.value);
-                    setErrors((p) => ({ ...p, income: "" }));
+                    if (!e.target.value || Number(e.target.value) < 15000) {
+                      setErrors((p) => ({
+                        ...p,
+                        income: "Minimum income is ₹15,000",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, income: "" }));
+                    }
                   }}
                   required
                 />
@@ -306,7 +368,17 @@ export const Apply = () => {
                   value={tenure}
                   onChange={(e) => {
                     setTenure(e.target.value);
-                    setErrors((p) => ({ ...p, tenure: "" }));
+                    if (
+                      !e.target.value ||
+                      (emptype === "Salaried" && Number(e.target.value) < 1)
+                    ) {
+                      setErrors((p) => ({
+                        ...p,
+                        tenure: "Minimum 1 year tenure required",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, tenure: "" }));
+                    }
                   }}
                   required
                 />
@@ -315,11 +387,15 @@ export const Apply = () => {
                 )}
               </div>
 
-              <div className="col-span-2">
+              <div className="col-span-2  flex items-center justify-center w-fu;;">
                 <Button
-                  disabled={loading}
+                  disabled={loading || !isFormValid}
                   type="submit"
-                  className="w-full bg-teal-800 text-white font-bold rounded-lg py-2"
+                  className={` mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    loading || !isFormValid
+                      ? "bg-gray-400"
+                      : "bg-teal-900 cursor-pointer"
+                  }`}
                 >
                   {loading ? "Submitting..." : "SUBMIT"}
                 </Button>

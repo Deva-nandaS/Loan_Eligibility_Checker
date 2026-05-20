@@ -29,13 +29,11 @@ export const Register = () => {
       "applicant"
     );
 
-    console.log(response);
+  
 
     toast.success("Registered successfully");
 
   } catch (err) {
-
-    console.log(err);
 
     toast.error("Registration failed");
   }
@@ -44,8 +42,8 @@ export const Register = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
   
-<div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
-        <div className="w-full md:w-1/2 flex justify-center items-center p-6">
+<div className="w-full max-w-4xl flex bg-white rounded-lg shadow-2xl overflow-hidden min-h-[550px] ">
+        <div className="w-full md:w-1/2 flex justify-center items-center border-r-gray border p-6">
           <form
             onSubmit={handleSubmit}
             className="w-full max-w-md flex flex-col"
@@ -104,15 +102,19 @@ export const Register = () => {
               <option>Applicant</option>
             </select>
 
-            <button className="bg-black text-white py-2 rounded" type="submit">
+            <button className="bg-teal-800 text-white py-2 rounded" type="submit">
               Register
             </button>
           </form>
         </div>
 
         {/* RIGHT IMAGE */}
-        <div className="hidden md:flex w-1/2 items-center justify-center bg-gray-50">
-          <img className="w-40" src="files/.png" alt="Loan_Eligibility_Checker" />
+        <div className="hidden md:flex w-1/2  items-center justify-center mr-6">
+          <img
+            className="w-[600px] h-[600px]"
+            src="/Loan_lens_logo.svg"
+            alt="Loan_Eligibility_Checker"
+          />
         </div>
       </div>
     </div>

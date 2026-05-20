@@ -13,9 +13,8 @@ const getLoanResult = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
-  1;
+  
 };
-
 const getSuggestions = (reasons) => {
   const suggestions = [];
   reasons.forEach((r) => {
@@ -26,7 +25,7 @@ const getSuggestions = (reasons) => {
     if (r.includes("tenure"))
       suggestions.push("Complete at least 1 year at current job");
     if (r.includes("Unemployed") || r.includes("unemployed"))
-      suggestions.push("Be an employ first");
+      suggestions.push("Be an employee first");
   });
   return suggestions;
 };
@@ -65,7 +64,6 @@ const applyLoan = async (req, res) => {
     }
 
     const calc = loanCalculator(applicant);
-
     const debtRatio = (applicant.debt / applicant.income).toFixed(2);
     const totalPayable = Math.round(calc.emi * applicant.loanTenure);
     const totalInterestPayable = totalPayable - applicant.amount;
@@ -102,7 +100,7 @@ const applyLoan = async (req, res) => {
       },
     });
   } catch (err) {
-    console.log(err);
+  
     return res.status(500).json({ message: err.message });
   }
 };
@@ -112,9 +110,7 @@ const getLoanHistory = async (req, res) => {
     const loans = await Loan.find({ user: req.user.userId }).sort({
       createdAt: -1,
     });
-    console.log("user id:", req.user.userId);
-    console.log("loans found:", loans.length);
-    console.log("req.user:", req.user);
+  
     return res.status(200).json(loans);
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -145,7 +141,7 @@ const updateOverride = async (req, res) => {
     const loan = await Loan.findByIdAndUpdate(
       req.params.id,
       { eligible, reasons: [reason], suggestions: [suggestions] },
-      { returnDocument: "after" },
+      { new:true},
     );
     return res.status(200).json(loan);
   } catch (err) {

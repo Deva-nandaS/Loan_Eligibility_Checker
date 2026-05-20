@@ -11,7 +11,6 @@ const loanSchema = new mongoose.Schema({
   loanTenure: { type: Number, required: true },
   purpose: { type: String, required: true },
   amount: { type: Number, required: true },
-
   eligible: { type: Boolean },
   interestRate: { type: Number },
   riskCategory: { type: String },

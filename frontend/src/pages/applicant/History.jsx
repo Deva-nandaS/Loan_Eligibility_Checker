@@ -13,15 +13,13 @@ export const History = ({ onClose }) => {
     const fetch = async () => {
       try {
         const data = await getLoanHistory();
-        console.log("history:", data);
+      
         setHistory(data);
       } catch (err) {
-        console.log("fetch error:", err);
+     
       } finally {
         setLoading(false);
       }
-      console.log("history:", history);
-      console.log("loading:", loading);
     };
     fetch();
   }, []);

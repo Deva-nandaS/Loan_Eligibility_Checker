@@ -9,7 +9,7 @@ export const ApplicationDetail = () => {
   const [showDetails, setShowDetails] = useState(null);
   const [showOverride, setShowOverride] = useState(false);
   const [reason, setReason] = useState("");
-  const [suggestion, setSuggestion] = useState("");
+  const [suggestions, setSuggestion] = useState("");
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -18,8 +18,6 @@ export const ApplicationDetail = () => {
     const fetchData = async () => {
       try {
         const data = await getApplicationById(id);
-        console.log("APPLICATION DETAIL id:", id);
-        console.log("APPLIACTION DETAIL data:", data);
         setShowDetails(data);
       } catch (err) {
         navigate("/applicant/apply", { replace: true });
@@ -28,26 +26,28 @@ export const ApplicationDetail = () => {
     fetchData();
   }, [id]);
 
-  const handleOverride = () => setShowOverride(true);
+  const handleOverride = () =>{
+setShowOverride(true);
+  }
   const handleConfirm = async () => {
     try {
       const response = await updateOverride(
         id,
         !showDetails.eligible,
         reason,
-        suggestion,
+        suggestions,
       );
-      console.log("override response:", response);
+  
       setShowDetails({
         ...showDetails,
         eligible: !showDetails.eligible,
-        reason: [reason],
-        suggestions: [suggestion],
+        reasons: [reason],
+        suggestions: [suggestions],
       });
-      console.log("ShowDetails", showDetails);
+   
       setShowOverride(false);
     } catch (err) {
-      console.log("override error:", err);
+  
     }
   };
 
@@ -89,6 +89,18 @@ export const ApplicationDetail = () => {
                   "Total Interest Payable",
                   `${showDetails.totalInterestPayable}`,
                 ],
+                 [
+                  "Reasons:",
+                  showDetails.reasons.length > 0
+                    ? showDetails.reasons.join(",")
+                    : "N/A",
+                ],
+                [
+                  "Suggestions:",
+                  showDetails.suggestions.length > 0
+                    ? showDetails.suggestions.join(",")
+                    : "N/A",
+                ],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between ">
                   <span className="font-semibold text-gray-600">{label}</span>
@@ -104,7 +116,6 @@ export const ApplicationDetail = () => {
                 ["Age", showDetails.age],
                 ["Employee type:", showDetails.emptype],
                 ["Job Tenure:", `${showDetails.tenure}`],
-
                 ["Income", showDetails.income],
                 ["Debt", showDetails.debt],
                 ["Debt Ratio", showDetails.debtRatio],
@@ -113,7 +124,6 @@ export const ApplicationDetail = () => {
                 ["Loan Purpose:", showDetails.purpose],
                 ["Requested Amount", `${showDetails.amount}`],
                 ["Loan Tenure:", `${showDetails.loanTenure}`],
-                ["Job Tenure:", `${showDetails.tenure}`],
                 [
                   "Reasons:",
                   showDetails.reasons.length > 0
@@ -182,8 +192,8 @@ export const ApplicationDetail = () => {
                     <label className="font-semibold">Suggestions:</label>
                     <input
                       type="text"
-                      value={suggestion}
-                      placeholder="Enter suggestion"
+                      value={suggestions}
+                      placeholder="Enter suggestions"
                       className="border p-2 rounded"
                       onChange={(e) => setSuggestion(e.target.value)}
                     />

@@ -8,6 +8,7 @@ export const Metrics = () => {
       </div>
 
       <div className="flex-1 flex-col p-6 gap-6 ml-64 space-y-8 overflow-auto">
+        <h2 className="text-3xl font-bold">Loan Metrics</h2>
         <div>
           <h2 className="text-2xl font-bold mb-4">Eligibility Thresholds </h2>
           <div className="border rounded overflow-hidden bg-white">

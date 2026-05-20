@@ -13,10 +13,10 @@ export const ViewApplication = () => {
     const fetchData = async () => {
       try {
         const data = await getApplication();
-        console.log("data:", data);
+     
         setViews(data);
       } catch (err) {
-        console.log("Error", err);
+   
       }
     };
     fetchData();

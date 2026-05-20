@@ -12,6 +12,11 @@ export const ChangePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if(!password && !newPassword&&!confirmPassword){
+      alert("Fill this field")
+    }
+
+
     if (newPassword !== confirmPassword) {
       alert("Password mismatch");
 
@@ -20,12 +25,11 @@ export const ChangePassword = () => {
     try {
       const response = await changePassword(password, newPassword);
       setNewPassword(response);
-      console.log(response);
-
+      
       toast.success("Password Updated successfully");
     } catch (err) {
-      console.log(err);
 
+     
       toast.error("Update failed");
     }
   };
@@ -33,7 +37,7 @@ export const ChangePassword = () => {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
-        <div className="w-full md:w-1/2 flex justify-center items-center p-6">
+        <div className="w-full md:w-1/2 flex justify-center border border-r-gray items-center p-6 ">
           <form
             onSubmit={handleSubmit}
             className="w-full max-w-md flex flex-col"
@@ -72,8 +76,8 @@ export const ChangePassword = () => {
             />
             <div className="flex gap-3 items-center justify-center">
               <button
-                className="bg-teal-800 font-bold text-white py-2 rounded mt-5 px-12"
-                type="submit"
+                className="bg-gray-200 font-bold text-black py-2 rounded mt-5 px-12"
+                type="button"
                 onClick={()=>navigate("/applicant/applicantDashboard")}
               >
                 BACK
@@ -81,6 +85,7 @@ export const ChangePassword = () => {
               <button
                 className="bg-teal-800 font-bold text-white py-2 rounded mt-5 px-12"
                 type="submit"
+                
               >
                 UPDATE
               </button>
@@ -89,10 +94,10 @@ export const ChangePassword = () => {
         </div>
 
         {/* RIGHT IMAGE */}
-        <div className="hidden md:flex w-1/2 items-center justify-center bg-gray-50">
+       <div className="hidden md:flex w-1/2  items-center justify-center mr-6">
           <img
-            className="w-40"
-            src="/loan_logo.png"
+            className="w-[600px] h-[600px]"
+            src="/Loan_lens_logo.svg"
             alt="Loan_Eligibility_Checker"
           />
         </div>

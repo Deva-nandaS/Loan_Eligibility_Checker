@@ -40,7 +40,7 @@ export const Login = () => {
       <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
         {/* LEFT FORM */}
 
-        <div className="w-full md:w-1/2 flex justify-center items-center p-10 min-h-[500px]">
+        <div className="w-full md:w-1/2 flex justify-center border-r-gray border items-center p-10 min-h-[500px]">
           <form
             onSubmit={handleSubmit}
             className="w-full max-w-md flex flex-col gap-2"
@@ -88,10 +88,10 @@ export const Login = () => {
         </div>
 
         {/* RIGHT IMAGE */}
-        <div className="hidden md:flex w-1/2 items-center justify-center bg-gray-50">
+        <div className="hidden md:flex w-1/2  items-center justify-center mr-6">
           <img
             className="w-[600px] h-[600px]"
-            src="/"
+            src="/Loan_lens_logo.svg"
             alt="Loan_Eligibility_Checker"
           />
         </div>
