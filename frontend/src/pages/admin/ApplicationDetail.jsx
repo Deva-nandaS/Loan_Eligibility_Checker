@@ -24,11 +24,11 @@ export const ApplicationDetail = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, navigate]);
 
-  const handleOverride = () =>{
-setShowOverride(true);
-  }
+  const handleOverride = () => {
+    setShowOverride(true);
+  };
   const handleConfirm = async () => {
     try {
       const response = await updateOverride(
@@ -37,17 +37,35 @@ setShowOverride(true);
         reason,
         suggestions,
       );
-  
-      setShowDetails({
-        ...showDetails,
-        eligible: !showDetails.eligible,
-        reasons: [reason],
-        suggestions: [suggestions],
-      });
-   
-      setShowOverride(false);
+      if (response.eligible === true) {
+        setShowDetails({
+          ...showDetails,
+          eligible: !showDetails.eligible,
+          interestRate: response.interestRate,
+          emi: response.emi,
+          totalPayable: response.totalPayable,
+          totalInterestPayable: response.totalInterestPayable,
+          debtRatio: response.debtRatio,
+          riskCategory: response.riskCategory,
+          requestedAmount: response.amount,
+          approvedAmount: response.amount,
+          reasons: [reason],
+          suggestions: [suggestions],
+        });
+      } else {
+        setShowDetails({
+          ...showDetails,
+          eligible: !showDetails.eligible,
+          reasons: [reason],
+          suggestions: [suggestions],
+        });
+
+        setShowOverride(false);
+      }
+      setReason(" ");
+      setSuggestion(" ");
     } catch (err) {
-  
+      console.log("Error:", err);
     }
   };
 
@@ -89,7 +107,7 @@ setShowOverride(true);
                   "Total Interest Payable",
                   `${showDetails.totalInterestPayable}`,
                 ],
-                 [
+                [
                   "Reasons:",
                   showDetails.reasons.length > 0
                     ? showDetails.reasons.join(",")
@@ -117,10 +135,8 @@ setShowOverride(true);
                 ["Employee type:", showDetails.emptype],
                 ["Job Tenure:", `${showDetails.tenure}`],
                 ["Income", showDetails.income],
-                ["Debt", showDetails.debt],
-                ["Debt Ratio", showDetails.debtRatio],
+                ["Debt", showDetails.debt], 
                 ["Credit Score:", showDetails.credit],
-                ["Risk Category", showDetails.riskCategory],
                 ["Loan Purpose:", showDetails.purpose],
                 ["Requested Amount", `${showDetails.amount}`],
                 ["Loan Tenure:", `${showDetails.loanTenure}`],

@@ -62,6 +62,7 @@ export const Result = () => {
                   <span className="font-medium">{value}</span>
                 </div>
               ))}
+              
             </div>
           ) : (
             <div className="space-y-3">
@@ -83,7 +84,7 @@ export const Result = () => {
                 <p className="font-semibold text-gray-600 mb-2">Suggestions</p>
                 {result.suggestions?.map((s, i) => (
                   <p key={i} className="text-sm text-gray-600">
-                    • {s}
+                    - {s}
                   </p>
                 ))}
               </div>
@@ -93,14 +94,14 @@ export const Result = () => {
           <div className="flex gap-4 mt-8">
             <Button
               className="flex-1 bg-teal-800 border text-white rounded-lg font-semibold py-2"
-              onClick={() => navigate("/applicant/apply", { replace: true })}
+              onClick={() => navigate("/applicant/apply",  {state:{name:result.name,age:result.age},replace: true })}
             >
               Apply Again
             </Button>
             <Button
               className="flex-1 bg-teal-800 text-white rounded-lg font-semibold py-2 "
               onClick={() =>
-                navigate("/applicant/applicantdashboard", { replace: true })
+                navigate("/applicant/", { replace: true })
               }
             >
               Done

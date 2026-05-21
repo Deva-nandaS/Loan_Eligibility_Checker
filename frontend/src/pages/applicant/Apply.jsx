@@ -4,12 +4,13 @@ import { Button } from "../../Components/ui/Button";
 import { Sidebar } from "../../Components/Sidebar";
 import { toast } from "react-toastify";
 import { createLoan } from "../../api/apply";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
 export const Apply = () => {
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
+  const location = useLocation();
+  const [name, setName] = useState(location.state?.name || "");
+  const [age, setAge] = useState(location.state?.age || "");
   const [emptype, setEmptype] = useState("Salaried");
   const [income, setIncome] = useState("");
   const [credit, setCredit] = useState("");
@@ -37,8 +38,6 @@ export const Apply = () => {
 
     if (!income) {
       newErrors.income = "Income is required";
-    } else if (Number(income) < 15000) {
-      newErrors.income = "Minimum income is ₹15,000";
     }
     if (!credit) {
       newErrors.credit = "Credit score is required";
@@ -57,8 +56,6 @@ export const Apply = () => {
 
     if (!amount) {
       newErrors.amount = "Amount is required";
-    } else if (Number(amount) > Number(income) * 10) {
-      newErrors.amount = "Amount cannot exceed 10x income";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -98,14 +95,12 @@ export const Apply = () => {
     Number(age) >= 21 &&
     Number(age) <= 65 &&
     !!income &&
-    Number(income) >= 15000 &&
     !!credit &&
     Number(credit) >= 650 &&
     !!tenure &&
     (emptype !== "Salaried" || Number(tenure) >= 1) &&
     !!loanTenure &&
-    !!amount &&
-    Number(amount) <= Number(income) * 10;
+    !!amount;
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden">
@@ -155,18 +150,10 @@ export const Apply = () => {
                   placeholder="age"
                   value={age}
                   onChange={(e) => {
-                    setAge(e.target.value);
-                    if (
-                      !e.target.value ||
-                      e.target.value < 21 ||
-                      e.target.value > 65
-                    ) {
-                      setErrors((p) => ({
-                        ...p,
-                        age: "Age must be between 21 and 65",
-                      }));
+                    if (!e.target.value) {
+                      setErrors((p) => ({ ...p, name: "Age is required" }));
                     } else {
-                      setErrors((p) => ({ ...p, age: "" }));
+                      setErrors((p) => ({ ...p, name: "" }));
                     }
                   }}
                   required
@@ -176,8 +163,48 @@ export const Apply = () => {
                 )}
               </div>
 
+                 {/* Monthlyincome */}
               <div>
-                <label className="font-bold mb-1 block">Loan Amount</label>
+                <label className="font-bold mb-1 block">Monthly Income</label>
+                <Input
+                  className="border-2 rounded-lg w-full p-2"
+                  type="number"
+                  placeholder="eg:20,000"
+                  value={income}
+                  onChange={(e) => {
+                    setIncome(e.target.value);
+                    if (!e.target.value) {
+                      setErrors((p) => ({
+                        ...p,
+                        income: "Monthly income is required",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, income: "" }));
+                    }
+                  }}
+                  required
+                />
+                {errors.income && (
+                  <p className="text-red-500 text-xs mt-1">{errors.income}</p>
+                )}
+              </div>
+
+              {/* loanamount */}
+              <div>
+                <div className="relative flex items-center gap-1.5">
+                  <label className="font-bold mb-1 block">Loan Amount</label>
+                  <AiOutlineInfoCircle
+                    size={14}
+                    className="text-gray-400 cursor-pointer"
+                    onMouseEnter={() => setActiveField("loanamount")}
+                    onMouseLeave={() => setActiveField(null)}
+                  />
+                  {activeField === "loanamount" && (
+                    <div className="absolute bg-white rounded-md shadow top-10 z-0 border p-2 w-48 text-xs">
+                      <p>Amount cannot exceed 40% of income</p>
+                    </div>
+                  )}
+                </div>
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
@@ -185,13 +212,10 @@ export const Apply = () => {
                   value={amount}
                   onChange={(e) => {
                     setAmount(e.target.value);
-                    if (
-                      !e.target.value ||
-                      Number(e.target.value) > Number(income) * 10
-                    ) {
+                    if (!e.target.value) {
                       setErrors((p) => ({
                         ...p,
-                        amount: "Amount cannot exceed 10x income",
+                        amount: "Amount is required",
                       }));
                     } else {
                       setErrors((p) => ({ ...p, amount: "" }));
@@ -204,6 +228,7 @@ export const Apply = () => {
                 )}
               </div>
 
+              {/* loantenure */}
               <div>
                 <div className=" relative flex items-center gap-1.5">
                   <label className="font-bold mb-1 block">
@@ -240,15 +265,23 @@ export const Apply = () => {
                   }}
                   required
                 />
-                {errors.loanTenure && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.loanTenure}
-                  </p>
-                )}
               </div>
-
+{/* credit */}
               <div>
-                <label className="font-bold mb-1 block">Credit Score</label>
+                <div className="relative flex items-center gap-1.5">
+                  <label className="font-bold mb-1 block">Credit Score</label>
+                  <AiOutlineInfoCircle
+                    size={14}
+                    className="text-gray-400 cursor-pointer"
+                    onMouseEnter={() => setActiveField("credit")}
+                    onMouseLeave={() => setActiveField(null)}
+                  />
+                  {activeField === "credit" && (
+                    <div className="absolute bg-white rounded-md shadow top-10 z-10 border p-2 w-48 text-xs">
+                      <p>Minimum credit score should be 650.</p>
+                    </div>
+                  )}
+                </div>
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
@@ -256,10 +289,10 @@ export const Apply = () => {
                   value={credit}
                   onChange={(e) => {
                     setCredit(e.target.value);
-                    if (!e.target.value || Number(e.target.value) < 650) {
+                    if (!e.target.value) {
                       setErrors((p) => ({
                         ...p,
-                        credit: "Minimum credit score is 650",
+                        credit: "Credit score is required",
                       }));
                     } else {
                       setErrors((p) => ({ ...p, credit: "" }));
@@ -267,9 +300,6 @@ export const Apply = () => {
                   }}
                   required
                 />
-                {errors.credit && (
-                  <p className="text-red-500 text-xs mt-1">{errors.credit}</p>
-                )}
               </div>
 
               <div>
@@ -287,31 +317,8 @@ export const Apply = () => {
                 </select>
               </div>
 
-              <div>
-                <label className="font-bold mb-1 block">Monthly Income</label>
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg:20,000"
-                  value={income}
-                  onChange={(e) => {
-                    setIncome(e.target.value);
-                    if (!e.target.value || Number(e.target.value) < 15000) {
-                      setErrors((p) => ({
-                        ...p,
-                        income: "Minimum income is ₹15,000",
-                      }));
-                    } else {
-                      setErrors((p) => ({ ...p, income: "" }));
-                    }
-                  }}
-                  required
-                />
-                {errors.income && (
-                  <p className="text-red-500 text-xs mt-1">{errors.income}</p>
-                )}
-              </div>
 
+              {/* debt */}
               <div>
                 <label className="font-bold mb-1 block">Existing Debt</label>
                 <Input
@@ -321,13 +328,23 @@ export const Apply = () => {
                   value={debt}
                   onChange={(e) => {
                     setDebt(e.target.value);
-                    setErrors((p) => ({ ...p, debt: "" }));
+                    if (!e.target.value) {
+                      setErrors((p) => ({
+                        ...p,
+                        income: "Debt field is required",
+                      }));
+                    } else {
+                      setErrors((p) => ({ ...p, debt: "" }));
+                    }
                   }}
+                  required
                 />
                 {errors.debt && (
                   <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
                 )}
               </div>
+
+              {/* employmentType */}
               <div>
                 <label className="font-bold mb-1 block">Employment Type</label>
                 <select
@@ -342,6 +359,7 @@ export const Apply = () => {
                 </select>
               </div>
 
+              {/* experience */}
               <div>
                 <div className=" relative flex items-center gap-1.5">
                   <label className="font-bold mb-1 block">
@@ -360,7 +378,6 @@ export const Apply = () => {
                     </div>
                   )}
                 </div>
-
                 <Input
                   className="border-2 rounded-lg w-full p-2"
                   type="number"
@@ -368,13 +385,10 @@ export const Apply = () => {
                   value={tenure}
                   onChange={(e) => {
                     setTenure(e.target.value);
-                    if (
-                      !e.target.value ||
-                      (emptype === "Salaried" && Number(e.target.value) < 1)
-                    ) {
+                    if (!e.target.value) {
                       setErrors((p) => ({
                         ...p,
-                        tenure: "Minimum 1 year tenure required",
+                        tenure: "Job Tenure field is required",
                       }));
                     } else {
                       setErrors((p) => ({ ...p, tenure: "" }));

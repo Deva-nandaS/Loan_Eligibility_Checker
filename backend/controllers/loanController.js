@@ -15,18 +15,18 @@ const getLoanResult = async (req, res) => {
   }
 };
 const getSuggestions = (reasons) => {
-  const suggestions = [];
+  const suggestions = new Set();
   reasons.forEach((r) => {
-    if (r.includes("income")) suggestions.push("Increase your monthly income");
-    if (r.includes("credit")) suggestions.push("Improve your credit score");
-    if (r.includes("debt")) suggestions.push("Reduce existing debts");
-    if (r.includes("amount")) suggestions.push("Apply for a lower loan amount");
+    if (r.includes("income")) suggestions.add("Increase your monthly income");
+    if (r.includes("credit")) suggestions.add("Improve your credit score");
+    if (r.includes("debt")) suggestions.add("Reduce existing debts");
+    if (r.includes("amount")) suggestions.add("Apply for a lower loan amount");
     if (r.includes("tenure"))
-      suggestions.push("Complete at least 1 year at current job");
+      suggestions.add("Complete at least 1 year at current job");
     if (r.includes("Unemployed") || r.includes("unemployed"))
-      suggestions.push("Be an employee first");
+      suggestions.add("Be an employee first");
   });
-  return suggestions;
+  return [...suggestions];
 };
 
 const applyLoan = async (req, res) => {
@@ -135,15 +135,42 @@ const getApplicationById = async (req, res) => {
 
 const updateOverride = async (req, res) => {
   try {
-    const { eligible, reason, suggestions } = req.body;
-    const loan = await Loan.findByIdAndUpdate(
+    const { eligible, reason, suggestions } = req.body; //data send (need to update) form frontend
+    console.log("Updated", req.body);
+    const loan = await Loan.findById(req.params.id); //data already in db
+    console.log("db data:", loan);
+    let updatedData = {
+      eligible,
+      reasons: [reason],
+      suggestions: [suggestions],
+    };
+    if (eligible === true) {
+      const calc = loanCalculator(loan);
+      const eligibility = loanEligibility(loan);
+      console.log("calculated data", calc);
+      const debtRatio = (loan.debt / loan.income).toFixed(2);
+      const totalPayable = Math.round(calc.emi * loan.loanTenure);
+      const totalInterestPayable = totalPayable - loan.amount;
+
+      updatedData = {
+        ...updatedData,
+        interestRate: calc.finalRate,
+        riskCategory: eligibility.riskCategory,
+        emi: calc.emi,
+        totalPayable,
+        totalInterestPayable,
+        debtRatio,
+      };
+    }
+    const updatedLoan = await Loan.findByIdAndUpdate(
       req.params.id,
-      { eligible, reasons: [reason], suggestions: [suggestions] },
+      { $set: updatedData },
       { new: true },
     );
-    return res.status(200).json(loan);
+    console.log("updated loan:", updatedLoan);
+    return res.status(200).json(updatedLoan);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 

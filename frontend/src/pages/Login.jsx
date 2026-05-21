@@ -28,7 +28,7 @@ export const Login = () => {
       if (user.role === "admin") {
         navigate("/admin/admindashboard");
       } else {
-        navigate("/applicant/applicantdashboard");
+        navigate("/applicant/");
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Login failed");
