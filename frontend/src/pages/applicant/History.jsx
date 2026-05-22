@@ -9,6 +9,7 @@ export const History = ({ onClose }) => {
   const [showProblem, setShowProblem] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [page, setPage] = useState(5);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetch = async () => {
@@ -24,6 +25,10 @@ export const History = ({ onClose }) => {
     fetch();
   }, []);
 
+  const filteredHistory = history.filter((item) =>
+    item?.amount?.toString().includes(search),
+  );
+
   if (loading)
     return (
       <div className="flex h-screen items-center justify-center">
@@ -32,11 +37,31 @@ export const History = ({ onClose }) => {
     );
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen fixed overflow-hidden">
       <Sidebar />
-      <div className="flex-1 p-6 overflow-auto">
+      {/* body */}
+
+      <div className="flex-1 p-6 pl-12 ml-56 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-4">Loan History</h2>
-        <div className="border rounded overflow-hidden bg-white">
+
+        <div className="border border-gray w-3/4 h-14 rounded-md mt-3 mb-5 cursor-auto">
+          <div className="p-3 ">
+            <input
+              type="text"
+              value={search}
+              placeholder="Search..."
+              className="outline-none w-full"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className=" mt-6 text-lg text-slate-700">
+            {" "}
+            <p>
+              {history.length} application{history.length!==1?"s" : ""}
+            </p>
+          </div>
+        </div>
+        <div className="border rounded overflow-hidden bg-white mt-20">
           <div className="overflow-x-auto">
             <table className="min-w-full w-full text-left border-collapse text-sm">
               <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
@@ -59,14 +84,14 @@ export const History = ({ onClose }) => {
               </thead>
 
               <tbody>
-                {history.length === 0 ? (
+                {filteredHistory.length === 0 ? (
                   <tr>
                     <td colSpan="8" className="p-4 text-center text-gray-500">
                       No loan applications found
                     </td>
                   </tr>
                 ) : (
-                  history.slice(0, page).map((item) => (
+                  filteredHistory.slice(0, page).map((item) => (
                     <tr
                       key={item._id}
                       className="hover:bg-gray-50 cursor-pointer"

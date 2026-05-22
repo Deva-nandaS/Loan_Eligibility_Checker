@@ -103,12 +103,14 @@ export const Apply = () => {
     !!amount;
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
-      <Sidebar />
-      <div className="w-full flex justify-center items-center  bg-gray-50 overflow-y-auto py-8 px-4">
+   <div className="flex h-screen overflow-hidden">
+  <Sidebar />
+
+  <div className="flex-1 ml-56 bg-white overflow-y-auto py-8 px-4">
+    <div className="max-w-2xl mx-auto">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col rounded-xl  border-teal-800 border shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
+          className="flex flex-col fixed rounded-xl  border-teal-800 border shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
         >
           <div className="w-full ">
             <div className="flex border-b-teal-800  border-b items-center justify-center ">
@@ -150,10 +152,11 @@ export const Apply = () => {
                   placeholder="age"
                   value={age}
                   onChange={(e) => {
+                    setAge(e.target.value)
                     if (!e.target.value) {
-                      setErrors((p) => ({ ...p, name: "Age is required" }));
+                      setErrors((p) => ({ ...p, age: "Age is required" }));
                     } else {
-                      setErrors((p) => ({ ...p, name: "" }));
+                      setErrors((p) => ({ ...p, age: "" }));
                     }
                   }}
                   required
@@ -331,7 +334,7 @@ export const Apply = () => {
                     if (!e.target.value) {
                       setErrors((p) => ({
                         ...p,
-                        income: "Debt field is required",
+                        debt: "Debt field is required",
                       }));
                     } else {
                       setErrors((p) => ({ ...p, debt: "" }));
@@ -418,6 +421,7 @@ export const Apply = () => {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 };

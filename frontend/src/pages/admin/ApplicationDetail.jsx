@@ -67,6 +67,8 @@ export const ApplicationDetail = () => {
     } catch (err) {
       console.log("Error:", err);
     }
+    
+        setShowOverride(false);
   };
 
   if (!showDetails)
@@ -165,7 +167,7 @@ export const ApplicationDetail = () => {
             <Button
               className="flex-1 bg-gray-400 border text-black rounded-lg font-bold py-2 hover:bg-gray-200"
               onClick={() =>
-                navigate("/admin/ViewApplication", { replace: true })
+                navigate("/admin/", { replace: true })
               }
             >
               Back

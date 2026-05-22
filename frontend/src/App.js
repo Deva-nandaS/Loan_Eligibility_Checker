@@ -15,6 +15,7 @@ import { ApplicationDetail } from "./pages/admin/ApplicationDetail";
 import { Metrics } from "./pages/admin/Metrics";
 
 import { ChangePassword } from "./pages/ChangePassword";
+import { NotFound } from "./pages/NotFound";
 
 function App() {
   return (
@@ -24,14 +25,15 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Login />} />
          <Route path="/changepassword" element={<ChangePassword />} />
-        <Route path="/admin/admindashboard" element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
+        <Route path="/admin/" element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/applicant/" element={<PrivateRoute role="applicant"><ApplicantDashboard   /></PrivateRoute>} />
         <Route path="/applicant/apply" element={<PrivateRoute role="applicant"><Apply /></PrivateRoute>} /> 
         <Route path="/applicant/result/:id" element={<PrivateRoute role="applicant"><Result /></PrivateRoute>} /> 
          <Route path="/applicant/history" element={<PrivateRoute role="applicant"><History /></PrivateRoute>} /> 
-         <Route path="/admin/ViewApplication" element={<PrivateRoute  role="admin"><ViewApplication /></PrivateRoute>} />
+         <Route path="/admin/applications" element={<PrivateRoute  role="admin"><ViewApplication /></PrivateRoute>} />
           <Route path="/admin/applications/:id" element={<PrivateRoute  role="admin"><ApplicationDetail/></PrivateRoute>} />
           <Route path="/admin/metrics" element={<PrivateRoute  role="admin"><Metrics/></PrivateRoute>} />
+          <Route path="*" element={<NotFound/>}/>
          
          
          

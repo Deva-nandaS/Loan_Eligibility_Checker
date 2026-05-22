@@ -53,7 +53,7 @@ const applyLoan = async (req, res) => {
         reasons: eligibility.reasons,
         suggestions: getSuggestions(eligibility.reasons),
       });
-      return res.status(422).json({
+      return res.status(200).json({
         status: "REJECTED",
         loanId: loan._id,
         reason: eligibility.reasons[0],
@@ -135,7 +135,7 @@ const getApplicationById = async (req, res) => {
 
 const updateOverride = async (req, res) => {
   try {
-    const { eligible, reason, suggestions } = req.body; //data send (need to update) form frontend
+    const { eligible, reason, suggestions } = req.body; //data send (need to update) from frontend
     console.log("Updated", req.body);
     const loan = await Loan.findById(req.params.id); //data already in db
     console.log("db data:", loan);

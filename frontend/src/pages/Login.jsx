@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  useNavigate,Navigate  } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginUser } from "../api/auth";
 
@@ -7,6 +7,17 @@ export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const token=localStorage.getItem("token");
+  if(token){
+    const user=JSON.parse(localStorage.getItem("user"))
+    if (user?.role==="admin"){
+      return <Navigate to="/admin/" replace/>
+    }
+    else{
+       return <Navigate to="/applicant/" replace/>
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,9 +37,9 @@ export const Login = () => {
       const user = data.data.user;
 
       if (user.role === "admin") {
-        navigate("/admin/admindashboard");
+        navigate("/admin/",{replace:true});
       } else {
-        navigate("/applicant/");
+        navigate("/applicant/",{replace:true});
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Login failed");
@@ -58,6 +69,7 @@ export const Login = () => {
 
             <label className="font-bold">Email</label>
             <input
+            type="email"
               value={email}
               placeholder="Email"
               className="border p-2 rounded mb-3"
@@ -71,6 +83,7 @@ export const Login = () => {
               </Link>
             </div>
             <input
+            type="password"
               value={password}
               placeholder="Password"
               className="border p-2 rounded mb-6"

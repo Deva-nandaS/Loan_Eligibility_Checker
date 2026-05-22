@@ -78,7 +78,7 @@ export const ChangePassword = () => {
               <button
                 className="bg-gray-200 font-bold text-black py-2 rounded mt-5 px-12"
                 type="button"
-                onClick={()=>navigate("/applicant/applicantDashboard")}
+                onClick={()=>navigate("/admin/")}
               >
                 BACK
               </button>

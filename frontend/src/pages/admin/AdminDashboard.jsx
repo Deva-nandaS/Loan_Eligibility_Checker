@@ -22,15 +22,15 @@ export const AdminDashboard = () => {
   if (!details) return <div>Loading...</div>;
 
  return (
-    <div className="flex h-screen">
+    <div className="flex h-screen fixed overflow-hidden">
       <Sidebar />
-      <div className="flex-1 p-6 overflow-auto">
-        <div className="flex gap-2 items-center justify-center">
+      <div className="flex-1 ml-64 p-6 mt-5 pl-5 overflow-y-auto">
+        <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold mb-6">Welcome !</h2>
          
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
            <div className="border rounded-lg border-t-teal-800 border-t-8 p-6 text-xl">
             <p className="text-gray-500 text-sm font-medium">
               TOTAL USERS

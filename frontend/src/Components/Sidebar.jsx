@@ -17,7 +17,7 @@ export const Sidebar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   const navClass = ({ isActive }) =>
@@ -28,21 +28,31 @@ export const Sidebar = () => {
 
   return (
     <div
-      className={`${collapsed ? "w-16" : "w-56"} border-r h-screen shadow-2xl flex flex-col justify-between bg-white transition-all duration-300 relative`}
+      className={`${collapsed ? "w-20" : "w-48"} fixed left-0 top-0 border-r h-screen shadow-2xl flex flex-col justify-between bg-white transition-all duration-300 `}
     >
       {/* Top section */}
       <div>
+        <div
+          className="flex p-4 justify-center items-center"
+          onClick={() =>
+            navigate(user?.role === "admin" ? "/admin/" : "/applicant/")
+          }
+        >
+          {!collapsed && <img src="/Loan_lens_logo.png" alt="logo" className="w-56 cursor-pointer"></img>}
+        </div>
         {/* Toggle button */}
-        <div className="p-3 flex justify-end">
+        <div
+          className={`p-3 flex ${collapsed ? "justify-center" : "justify-end"}`}
+        >
           {collapsed ? (
             <AiOutlineMenu
-              size={22}
+              size={25}
               className="cursor-pointer text-gray-400"
               onClick={() => setCollapsed(!collapsed)}
             />
           ) : (
             <RiArrowLeftSLine
-              size={22}
+              size={25}
               className="cursor-pointer"
               onClick={() => setCollapsed(!collapsed)}
             />
@@ -51,12 +61,15 @@ export const Sidebar = () => {
 
         {user.role === "applicant" ? (
           <div>
+            {/* new */}
             <NavLink to="/applicant/apply" className={navClass}>
               <div className="flex items-center gap-2">
                 <GrFormAdd size={25} className="text-gray-400" />
                 {!collapsed && <p>New</p>}
               </div>
             </NavLink>
+
+            {/* history */}
             <NavLink to="/applicant/history" className={navClass}>
               <div className="flex items-center gap-2">
                 <MdHistory size={25} className="text-gray-400" />
@@ -66,23 +79,15 @@ export const Sidebar = () => {
           </div>
         ) : (
           <div>
-            <NavLink
-              to="/admin/viewApplication"
-              className={({ isActive }) =>
-                `flex p-4 text-xl font-medium cursor-pointer ${isActive ? "bg-teal-800 text-white" : "hover:bg-gray-100"}`
-              }
-            >
+            <NavLink to="/admin/applications" className={navClass}>
               <div className="flex items-center gap-2">
                 <CiViewList size={25} className="text-gray-400" />
                 {!collapsed && <p>View</p>}
               </div>
             </NavLink>
-            <NavLink
-              to="/admin/metrics"
-              className={({ isActive }) =>
-                `flex p-4 text-xl font-medium cursor-pointer ${isActive ? "bg-teal-800 text-white" : "hover:bg-gray-100"}`
-              }
-            >
+
+            {/* metrics */}
+            <NavLink to="/admin/metrics" className={navClass}>
               <div className="flex items-center gap-2">
                 <SiVictoriametrics size={20} className="text-gray-400" />
                 {!collapsed && <p>Metrics</p>}
@@ -102,7 +107,9 @@ export const Sidebar = () => {
             {user?.email?.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
-            <p className="text-sm font-medium truncate">{user?.email}</p>
+            <p className="text-sm font-medium truncate">
+              {user?.email.split("@")[0]}
+            </p>
           )}
         </div>
 
