@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getLoanHistory } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
 import { IoCloseSharp } from "react-icons/io5";
+import { PiSpinnerGap } from "react-icons/pi";
 
 export const History = ({ onClose }) => {
   const [history, setHistory] = useState([]);
@@ -15,7 +16,7 @@ export const History = ({ onClose }) => {
     const fetch = async () => {
       try {
         const data = await getLoanHistory();
-
+        await new Promise(resolve=>setTimeout(resolve,2000))
         setHistory(data);
       } catch (err) {
       } finally {
@@ -31,8 +32,9 @@ export const History = ({ onClose }) => {
 
   if (loading)
     return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
+      <div className="flex gap-2 h-screen items-center justify-center">
+        <PiSpinnerGap size={60} className="animate-spin text-teal-900"/>
+        <span className="font-bold text-3xl text-teal-900">Loading....</span>
       </div>
     );
 

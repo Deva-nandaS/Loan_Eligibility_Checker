@@ -1,26 +1,28 @@
 import React, { useState } from "react";
-import { Link,  useNavigate,Navigate  } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { loginUser } from "../api/auth";
+import { PiSpinnerGap } from "react-icons/pi";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const token=localStorage.getItem("token");
-  if(token){
-    const user=JSON.parse(localStorage.getItem("user"))
-    if (user?.role==="admin"){
-      return <Navigate to="/admin/" replace/>
-    }
-    else{
-       return <Navigate to="/applicant/" replace/>
+  const token = localStorage.getItem("token");
+  if (token) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user?.role === "admin") {
+      return <Navigate to="/admin/" replace />;
+    } else {
+      return <Navigate to="/applicant/" replace />;
     }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (!email) {
       toast.error("Email is required");
       return;
@@ -30,21 +32,35 @@ export const Login = () => {
       toast.error("Password is required");
       return;
     }
+    setLoading(true);
     try {
       const data = await loginUser(email, password);
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       localStorage.setItem("token", data.data.token);
       localStorage.setItem("user", JSON.stringify(data.data.user));
       const user = data.data.user;
 
       if (user.role === "admin") {
-        navigate("/admin/",{replace:true});
+        navigate("/admin/", { replace: true });
       } else {
-        navigate("/applicant/",{replace:true});
+        navigate("/applicant/", { replace: true });
       }
     } catch (err) {
       toast.error(err?.response?.data?.message || "Login failed");
+      setLoading(false);
+    }
+    finally{
+      setLoading(false);
     }
   };
+
+  if (loading)
+    return (
+      <div className="flex gap-2 items-center h-screen justify-center">
+        <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
+        <span className="text-teal-900 font-bold text-3xl">Logging in....</span>
+      </div>
+    );
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
@@ -69,7 +85,7 @@ export const Login = () => {
 
             <label className="font-bold">Email</label>
             <input
-            type="email"
+              type="email"
               value={email}
               placeholder="Email"
               className="border p-2 rounded mb-3"
@@ -78,17 +94,21 @@ export const Login = () => {
 
             <div className="flex items-center justify-between mt-4">
               <label className="font-bold">Password</label>
+            </div>
+
+            <input
+              type="password"
+              value={password}
+              placeholder="Password"
+              className="border p-2 rounded mb-2"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <div className="flex justify-end ">
+              {" "}
               <Link to="/forgotpassword" className="text-blue-500">
                 Forgot password?
               </Link>
             </div>
-            <input
-            type="password"
-              value={password}
-              placeholder="Password"
-              className="border p-2 rounded mb-6"
-              onChange={(e) => setPassword(e.target.value)}
-            />
 
             <button
               className="bg-teal-800 text-white py-2 rounded mt-4"

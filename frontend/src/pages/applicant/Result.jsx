@@ -22,7 +22,7 @@ export const Result = () => {
       }
     };
     fetch();
-  }, [id]);
+  }, [id,navigate]);
 
   if (loading)
     return (
@@ -33,11 +33,11 @@ export const Result = () => {
   if (!result) return null;
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex justify-center items-center p-6">
+      <div className="flex-1 flex  ml-48 justify-center items-center p-6">
         <div
-          className={`bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg border
+          className={`bg-white fixed  rounded-xl shadow-2xl p-8 w-full max-w-lg border
           ${result.eligible ? "border-green-500" : "border-red-500"}`}
         >
           {result.eligible ? (

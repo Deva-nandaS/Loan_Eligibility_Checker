@@ -4,12 +4,14 @@ import { getApplicationById, updateOverride } from "../../api/admindashboard";
 import { useState } from "react";
 import { Button } from "../../Components/ui/Button";
 import { useEffect } from "react";
+import { PiSpinnerGap } from "react-icons/pi";
 
 export const ApplicationDetail = () => {
   const [showDetails, setShowDetails] = useState(null);
   const [showOverride, setShowOverride] = useState(false);
   const [reason, setReason] = useState("");
   const [suggestions, setSuggestion] = useState("");
+
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -37,6 +39,7 @@ export const ApplicationDetail = () => {
         reason,
         suggestions,
       );
+
       if (response.eligible === true) {
         setShowDetails({
           ...showDetails,
@@ -67,22 +70,23 @@ export const ApplicationDetail = () => {
     } catch (err) {
       console.log("Error:", err);
     }
-    
-        setShowOverride(false);
+
+    setShowOverride(false);
   };
 
   if (!showDetails)
     return (
       <div className="flex h-screen items-center justify-center">
-        Loading...
+        <span className="font-bold text-3xl text-teal-900">Loading...</span>
       </div>
     );
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex justify-center items-center p-6">
+      <div className="flex-1 flex ml-48 items-center justify-center p-6">
         <div
-          className={`bg-white rounded-xl shadow-2xl p-8 w-full max-w-lg border border-teal-800 border-
+          className={`bg-white fixed rounded-xl shadow-2xl p-8 w-[500px] max-w-lg border border-teal-800
            `}
         >
           {showDetails.eligible ? (
@@ -137,7 +141,7 @@ export const ApplicationDetail = () => {
                 ["Employee type:", showDetails.emptype],
                 ["Job Tenure:", `${showDetails.tenure}`],
                 ["Income", showDetails.income],
-                ["Debt", showDetails.debt], 
+                ["Debt", showDetails.debt],
                 ["Credit Score:", showDetails.credit],
                 ["Loan Purpose:", showDetails.purpose],
                 ["Requested Amount", `${showDetails.amount}`],
@@ -166,9 +170,7 @@ export const ApplicationDetail = () => {
           <div className="flex gap-4 mt-8">
             <Button
               className="flex-1 bg-gray-400 border text-black rounded-lg font-bold py-2 hover:bg-gray-200"
-              onClick={() =>
-                navigate("/admin/", { replace: true })
-              }
+              onClick={() => navigate("/admin/", { replace: true })}
             >
               Back
             </Button>
@@ -202,7 +204,7 @@ export const ApplicationDetail = () => {
                       type="text"
                       value={reason}
                       placeholder="Enter reason"
-                      className="border p-2 rounded"
+                      className="border p-2 rounded text-black"
                       onChange={(e) => setReason(e.target.value)}
                     />
                   </div>

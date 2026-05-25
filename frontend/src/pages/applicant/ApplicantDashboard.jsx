@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Sidebar } from "../../Components/Sidebar";
 import { getLoanHistory } from "../../api/apply";
+import { PiSpinnerGap } from "react-icons/pi";
 
 export const ApplicantDashboard = () => {
   const [details, setDetails] = useState(null);
@@ -23,7 +24,13 @@ export const ApplicantDashboard = () => {
     fetch();
   }, []);
 
-  if (!details) return <div>Loading...</div>;
+  if (!details)
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <PiSpinnerGap size={34} />
+        <p>Loading..</p>
+      </div>
+    );
 
   return (
     <div className="flex h-screen fixed overflow-hidden">
