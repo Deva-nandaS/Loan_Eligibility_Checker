@@ -1,7 +1,7 @@
 const loanEligibility = require("../utils/loanEligibility");
 const loanCalculator = require("../utils/loanCalculator");
 const Loan = require("../models/loan.model");
-const loanValidation=require("../validations/loanValidation")
+const loanValidation = require("../validations/loanValidation");
 
 const getLoanResult = async (req, res) => {
   try {
@@ -15,10 +15,6 @@ const getLoanResult = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
-
-
-
 
 const getSuggestions = (reasons) => {
   const suggestions = new Set();
@@ -36,16 +32,16 @@ const getSuggestions = (reasons) => {
 };
 
 const applyLoan = async (req, res) => {
-  const {error}=loanValidation.validate(req.body);
+  const { error } = loanValidation.validate(req.body);
 
-if (error) {
-  return res.status(400).json({
-    message: error.details[0].message,
-  });
-}
+  if (error) {
+    return res.status(400).json({
+      message: error.details[0].message,
+    });
+  }
   try {
     const applicant = req.body;
-     
+
     const eligibility = loanEligibility(applicant);
 
     if (!eligibility.eligible) {
@@ -177,7 +173,6 @@ const updateOverride = async (req, res) => {
     return res.status(500).json({ message: err.message });
   }
 };
-
 
 module.exports = {
   applyLoan,

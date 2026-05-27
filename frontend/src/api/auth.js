@@ -1,9 +1,7 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/auth";
+import api from "./api";
 
 export const registerUser = async (name, email, password, role) => {
-  const response = await axios.post(`${API_URL}/register`, {
+  const response = await api.post(`auth/register`, {
     name,
     email,
     password,
@@ -14,26 +12,34 @@ export const registerUser = async (name, email, password, role) => {
 };
 
 export const loginUser = async (email, password) => {
-  const response = await axios.post(`${API_URL}/login`, {
+  const response = await api.post(`auth/login`, {
     email,
     password,
-  },
-
-);
+  });
   return response.data;
 };
 
 export const changePassword = async (password, newPassword) => {
-  const token = localStorage.getItem("token");
-  const response = await axios.put(`${API_URL}/changePassword`, {
+  const response = await api.put(`auth/changePassword`, {
     password,
     newPassword,
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
   });
 
+  return response.data;
+};
+
+export const ForgotPassword = async (email) => {
+  const response = await api.post(`auth/ForgotPassword`, {
+    email,
+  });
+
+  return response.data;
+};
+
+export const ResetPassword = async (email, newPassword) => {
+  const response = await api.put(`auth/resetPassword`, {
+    email,
+    newPassword,
+  });
   return response.data;
 };

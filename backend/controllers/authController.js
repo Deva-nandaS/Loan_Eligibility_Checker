@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const loan = require("../models/loan.model");
 
 exports.register = async (req, res) => {
@@ -37,7 +38,6 @@ exports.register = async (req, res) => {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -108,9 +108,83 @@ exports.changePassword = async (req, res) => {
   }
 };
 
+exports.ForgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
 
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: "false", message: "Email not found", data: null });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "10m",
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD_APP_EMAIL,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset",
+      html: `
+      <h2>Reset your password</h2>
+      <p>Click the link below to reset your password.</p>
+      <a href="http://localhost:5000/resetpassword/${token}">Reset Password</a>`,
+    });
+
+    res.status(200).json({
+      message: "Reset link sent to your email",
+    });
+  } catch (err) {
+    (res.status(500),
+      json({ success: false, message: err.message, data: null }));
+  }
+};
+
+exports.ResetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid token", data: null });
+    }
+
+    const user = await User.findById(decoded.userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found", data: null });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.status(200).json({ success: true, message: "Password updated" });
+  } catch (err) {
+    if (err.name === "TokenExpired") {
+      return res
+        .status(401)
+        .json({ success: false, message: "Link expired", data: null });
+    }
+    return res
+      .status(500)
+      .json({ success: false, message: err.message, data: null });
+  }
+};
 exports.getAdminDashboard = async (req, res) => {
-
   try {
     const user = await User.findById(req.user.userId).select("-password");
     const userCount = await User.countDocuments({ role: "applicant" });

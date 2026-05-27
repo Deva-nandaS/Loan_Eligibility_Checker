@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { changePassword } from "../api/auth";
 import { useNavigate } from "react-router-dom";
+
+import { changePassword } from "../../api/auth";
 
 export const ChangePassword = () => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!password && !newPassword&&!confirmPassword){
-      alert("Fill this field")
+    if (!password && !newPassword && !confirmPassword) {
+      alert("Fill this field");
     }
-
 
     if (newPassword !== confirmPassword) {
       alert("Password mismatch");
@@ -25,11 +25,9 @@ export const ChangePassword = () => {
     try {
       const response = await changePassword(password, newPassword);
       setNewPassword(response);
-      
+
       toast.success("Password Updated successfully");
     } catch (err) {
-
-     
       toast.error("Update failed");
     }
   };
@@ -78,14 +76,13 @@ export const ChangePassword = () => {
               <button
                 className="bg-gray-200 font-bold text-black py-2 rounded mt-5 px-12"
                 type="button"
-                onClick={()=>navigate("/admin/")}
+                onClick={() => navigate("/admin/")}
               >
                 BACK
               </button>
               <button
                 className="bg-teal-800 font-bold text-white py-2 rounded mt-5 px-12"
                 type="submit"
-                
               >
                 UPDATE
               </button>
@@ -94,7 +91,7 @@ export const ChangePassword = () => {
         </div>
 
         {/* RIGHT IMAGE */}
-       <div className="hidden md:flex w-1/2  items-center justify-center mr-6">
+        <div className="hidden md:flex w-1/2  items-center justify-center mr-6">
           <img
             className="w-[600px] h-[600px]"
             src="/Loan_lens_logo.svg"

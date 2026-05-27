@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { PiSpinnerGap } from "react-icons/pi";
+
 import { Sidebar } from "../../Components/Sidebar";
 import { getLoanHistory } from "../../api/apply";
-import { PiSpinnerGap } from "react-icons/pi";
+
 
 export const ApplicantDashboard = () => {
   const [details, setDetails] = useState(null);

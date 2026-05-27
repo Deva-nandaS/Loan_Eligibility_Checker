@@ -7,11 +7,12 @@ export const Metrics = () => {
         <Sidebar />
       </div>
 
-      <div className="flex-1 flex-col p-6 gap-6 ml-56 space-y-8 overflow-auto">
+      <div className="flex-1 flex-col fixed p-6 gap-6 ml-56 space-y-8 overflow-auto scroll-auto">
+        <div className="">
         <h2 className="text-3xl font-bold">Loan Metrics</h2>
         <div>
-          <h2 className="text-2xl font-bold mb-4">Eligibility Thresholds </h2>
-          <div className="border rounded overflow-hidden bg-white">
+          <h2 className="text-2xl font-bold mb-4 mt-3 ml-7">Eligibility Thresholds </h2>
+          <div className="border rounded overflow-hidden bg-white ml-7">
             <div className="">
               <table className="min-w-full w-full text-left border-collapse text-sm">
                 <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
@@ -222,6 +223,7 @@ export const Metrics = () => {
             </table>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

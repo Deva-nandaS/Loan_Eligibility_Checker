@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Sidebar } from "../../Components/Sidebar";
 import { getApplication } from "../../api/admindashboard";
-import { useNavigate } from "react-router-dom";
 import { Button } from "../../Components/ui/Button";
 
 export const ViewApplication = () => {
-  const [views, setViews] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const [views, setViews] = useState([]);
   const [page, setPage] = useState(5);
   const [search, setSearch] = useState("");
 

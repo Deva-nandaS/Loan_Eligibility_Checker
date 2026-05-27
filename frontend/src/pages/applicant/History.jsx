@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import { getLoanHistory } from "../../api/apply";
-import { Sidebar } from "../../Components/Sidebar";
 import { IoCloseSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
+import { AiOutlineInfoCircle } from "react-icons/ai";
+
+import { getLoanHistory } from "../../api/apply";
+import { Sidebar } from "../../Components/Sidebar";
+
 
 export const History = ({ onClose }) => {
   const [history, setHistory] = useState([]);
@@ -121,7 +124,7 @@ export const History = ({ onClose }) => {
                       <td className="p-4 border border-gray-300">
                         {item.loanTenure ? `${item.loanTenure} months` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td className="p-4 border border-gray-300 flex justify-between items-center">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold
                          
@@ -141,6 +144,7 @@ export const History = ({ onClose }) => {
                         >
                           {item.eligible ? "APPROVED" : "REJECTED"}
                         </span>
+                        <span ><AiOutlineInfoCircle className="text-gray-500"/></span>
                       </td>
                     </tr>
                   ))

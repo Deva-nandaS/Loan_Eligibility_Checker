@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { Input } from "../../Components/ui/Input";
-import { Button } from "../../Components/ui/Button";
-import { Sidebar } from "../../Components/Sidebar";
 import { toast } from "react-toastify";
-import { createLoan } from "../../api/apply";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { PiSpinnerGap } from "react-icons/pi";
 
+import { Input } from "../../Components/ui/Input";
+import { Button } from "../../Components/ui/Button";
+import { Sidebar } from "../../Components/Sidebar";
+import { createLoan } from "../../api/apply";
+
+
 export const Apply = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  
   const [name, setName] = useState(location.state?.name || "");
   const [age, setAge] = useState(location.state?.age || "");
   const [emptype, setEmptype] = useState("Salaried");
@@ -23,7 +27,7 @@ export const Apply = () => {
   const [debt, setDebt] = useState("");
   const [loading, setLoading] = useState(false);
   const [activeField, setActiveField] = useState(null);
-  const navigate = useNavigate();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

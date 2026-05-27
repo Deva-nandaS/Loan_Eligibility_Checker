@@ -9,6 +9,7 @@ import { RiArrowLeftSLine } from "react-icons/ri";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
+  
   const [showLogout, setShowLogout] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 

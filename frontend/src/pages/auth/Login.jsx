@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { loginUser } from "../api/auth";
 import { PiSpinnerGap } from "react-icons/pi";
 
+import { loginUser } from "../../api/auth";
+
 export const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");

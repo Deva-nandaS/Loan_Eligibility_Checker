@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import { registerUser } from "../../api/auth";
 
 export const Register = () => {
@@ -20,29 +21,17 @@ export const Register = () => {
 
       return;
     }
-     try {
-
-    const response = await registerUser(
-      name,
-      email,
-      password,
-      "applicant"
-    );
-
-  
-
-    toast.success("Registered successfully");
-
-  } catch (err) {
-
-    toast.error("Registration failed");
-  }
+    try {
+      await registerUser(name, email, password, "applicant");
+      toast.success("Registered successfully");
+    } catch (err) {
+      toast.error("Registration failed");
+    }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-  
-<div className="w-full max-w-4xl flex bg-white rounded-lg shadow-2xl overflow-hidden min-h-[550px] ">
+      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-2xl overflow-hidden min-h-[550px] ">
         <div className="w-full md:w-1/2 flex justify-center items-center border-r-gray border p-6">
           <form
             onSubmit={handleSubmit}
@@ -102,7 +91,10 @@ export const Register = () => {
               <option>Applicant</option>
             </select>
 
-            <button className="bg-teal-800 text-white py-2 rounded" type="submit">
+            <button
+              className="bg-teal-800 text-white py-2 rounded"
+              type="submit"
+            >
               Register
             </button>
           </form>

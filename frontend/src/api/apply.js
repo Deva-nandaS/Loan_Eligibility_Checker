@@ -1,33 +1,16 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/loan";
+import api from "./api";
 
 export const createLoan = async (data) => {
-  const token = localStorage.getItem("token");
-  const res = await axios.post(`${API_URL}/apply`, data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+  const res = await api.post("loan/apply", data);
   return res.data;
 };
 
 export const getLoanResult = async (id) => {
-  const token = localStorage.getItem("token");
-  const res = await axios.get(`${API_URL}/result/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+  const res = await api.get(`loan/result/${id}`);
   return res.data;
 };
 
 export const getLoanHistory = async () => {
-  const token = localStorage.getItem("token");
-  const res = await axios.get(`${API_URL}/history`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const res = await api.get("loan/history");
   return res.data;
 };

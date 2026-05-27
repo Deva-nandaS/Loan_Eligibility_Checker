@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import { Button } from "../../Components/ui/Button";
 import { getLoanResult } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
 
 export const Result = () => {
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {

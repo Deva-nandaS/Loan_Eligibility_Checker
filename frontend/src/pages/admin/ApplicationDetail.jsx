@@ -1,20 +1,28 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Sidebar } from "../../Components/Sidebar";
-import { getApplicationById, updateOverride } from "../../api/admindashboard";
-import { useState } from "react";
-import { Button } from "../../Components/ui/Button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PiSpinnerGap } from "react-icons/pi";
 
+import { Sidebar } from "../../Components/Sidebar";
+import { getApplicationById, updateOverride } from "../../api/admindashboard";
+import { Button } from "../../Components/ui/Button";
+
+const Card = ({ label, value }) => {
+  return (
+    <div className="flex justify-between ">
+      <span className="font-semibold text-gray-600">{label}</span>
+      <span className="font-medium mr-5">{value}</span>
+    </div>
+  );
+};
+
 export const ApplicationDetail = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
   const [showDetails, setShowDetails] = useState(null);
   const [showOverride, setShowOverride] = useState(false);
   const [reason, setReason] = useState("");
   const [suggestions, setSuggestion] = useState("");
-
-
-  const navigate = useNavigate();
-  const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +89,65 @@ export const ApplicationDetail = () => {
       </div>
     );
 
+  const approvedFields = [
+    { label: "Applicant", value: showDetails.name },
+    { label: "Status", value: showDetails.eligible ? "Approved" : "Rejected" },
+    { label: "Employee type", value: showDetails.emptype },
+    { label: "Job Tenure", value: showDetails.tenure },
+    { label: "Income", value: showDetails.income },
+    { label: "Debt", value: showDetails.debt },
+    { label: "Debt Ratio", value: showDetails.debtRatio },
+    { label: "Credit Score", value: showDetails.credit },
+    { label: "Risk Category", value: showDetails.riskCategory },
+    { label: "Loan Purpose", value: showDetails.purpose },
+    { label: "Approved amount", value: showDetails.amount },
+    { label: "Requested amount", value: showDetails.amount },
+    { label: "Annual Interest Rate", value: showDetails.interestRate },
+    { label: "EMI", value: showDetails.emi },
+    { label: "Total Payable", value: showDetails.totalPayable },
+    {
+      label: "Total Interest Payable",
+      value: showDetails.totalInterestPayable,
+    },
+    {
+      label: "Reasons",
+      value:
+        showDetails.reasons.length > 0 ? showDetails.reasons.join(",") : "N/A",
+    },
+    {
+      label: "Suggestions",
+      value:
+        showDetails.suggestions.length > 0
+          ? showDetails.suggestions.join(",")
+          : "N/A",
+    },
+  ];
+
+  const rejectedFields = [
+    { label: "Applicant", value: showDetails.name },
+    { label: "Status", value: showDetails.eligible ? "Approved" : "Rejected" },
+    { label: "Age", value: showDetails.age },
+    { label: "Employee type:", value: showDetails.emptype },
+    { label: "Job Tenure:", value: showDetails.tenure },
+    { label: "Income", value: showDetails.income },
+    { label: "Debt", value: showDetails.debt },
+    { label: "Credit Score:", value: showDetails.credit },
+    { label: "Loan Purpose:", value: showDetails.purpose },
+    { label: "Requested Amount", value: showDetails.amount },
+    { label: "Loan Tenure", value: showDetails.loanTenure },
+    {
+      label: "Reasons:",
+      value:
+        showDetails.reasons.length > 0 ? showDetails.reasons.join(",") : "N/A",
+    },
+    {
+      label: "Suggestions:",
+      value:
+        showDetails.suggestions.length > 0
+          ? showDetails.suggestions.join(",")
+          : "N/A",
+    },
+  ];
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -91,78 +158,14 @@ export const ApplicationDetail = () => {
         >
           {showDetails.eligible ? (
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
-              {[
-                ["Applicant", showDetails.name],
-                ["Status:", showDetails.eligible ? "Approved" : "Rejected"],
-                ["Age", showDetails.age],
-                ["Employee type:", showDetails.emptype],
-                ["Job Tenure:", `${showDetails.tenure}`],
-                ["Income", showDetails.income],
-                ["Debt", showDetails.debt],
-                ["Debt Ratio", showDetails.debtRatio],
-                ["Credit Score:", showDetails.credit],
-                ["Risk Category", showDetails.riskCategory],
-                ["Loan Purpose:", showDetails.purpose],
-                ["Requested Amount", `${showDetails.amount}`],
-                ["Approved Amount", `${showDetails.amount}`],
-                ["Loan Tenure:", `${showDetails.loanTenure}`],
-                ["Annual Interest Rate", `${showDetails.interestRate}%`],
-                ["EMI:", `${showDetails.emi}`],
-                ["Total Payable", `${showDetails.totalPayable}`],
-                [
-                  "Total Interest Payable",
-                  `${showDetails.totalInterestPayable}`,
-                ],
-                [
-                  "Reasons:",
-                  showDetails.reasons.length > 0
-                    ? showDetails.reasons.join(",")
-                    : "N/A",
-                ],
-                [
-                  "Suggestions:",
-                  showDetails.suggestions.length > 0
-                    ? showDetails.suggestions.join(",")
-                    : "N/A",
-                ],
-              ].map(([label, value]) => (
-                <div key={label} className="flex justify-between ">
-                  <span className="font-semibold text-gray-600">{label}</span>
-                  <span className="font-medium mr-5">{value}</span>
-                </div>
+              {approvedFields.map(({ label, value }) => (
+                <div key={label} label={label} value={value}></div>
               ))}
             </div>
           ) : (
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
-              {[
-                ["Applicant", showDetails.name],
-                ["Status", showDetails.eligible ? "Approved" : "Rejected"],
-                ["Age", showDetails.age],
-                ["Employee type:", showDetails.emptype],
-                ["Job Tenure:", `${showDetails.tenure}`],
-                ["Income", showDetails.income],
-                ["Debt", showDetails.debt],
-                ["Credit Score:", showDetails.credit],
-                ["Loan Purpose:", showDetails.purpose],
-                ["Requested Amount", `${showDetails.amount}`],
-                ["Loan Tenure:", `${showDetails.loanTenure}`],
-                [
-                  "Reasons:",
-                  showDetails.reasons.length > 0
-                    ? showDetails.reasons.join(",")
-                    : "N/A",
-                ],
-                [
-                  "Suggestions:",
-                  showDetails.suggestions.length > 0
-                    ? showDetails.suggestions.join(",")
-                    : "N/A",
-                ],
-              ].map(([label, value]) => (
-                <div key={label} className="flex justify-between pb-2 mr-3">
-                  <span className="font-semibold text-gray-600 ">{label}</span>
-                  <span className="font-medium ml-8">{value}</span>
-                </div>
+              {rejectedFields.map(([label, value]) => (
+                <div key={label} label={label} value={value}></div>
               ))}
             </div>
           )}

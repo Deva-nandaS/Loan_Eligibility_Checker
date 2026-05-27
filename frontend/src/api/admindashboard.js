@@ -1,54 +1,25 @@
-import axios from "axios";
+import api from "./api";
 
 export const getAdminDashboard = async () => {
-  const token = localStorage.getItem("token");
-  const response = await axios.get(
-    "http://localhost:5000/api/admin/admindashboard",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  const response = await api.get("admin/admindashboard");
   return response.data;
 };
 
 export const getApplication = async () => {
-  const token = localStorage.getItem("token");
-  const response = await axios.get(
-    "http://localhost:5000/api/loan/viewapplications",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  const response = await api.get("loan/viewapplications");
   return response.data;
 };
 
 export const getApplicationById = async (id) => {
-  const token = localStorage.getItem("token");
-  const response = await axios.get(
-    `http://localhost:5000/api/loan/applicationdetails/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+  const response = await api.get(`loan/applicationdetails/${id}`);
   return response.data;
 };
 
-export const updateOverride = async (id,eligible,reason,suggestions) => {
-  const token = localStorage.getItem("token");
-  const response = await axios.put(
-    `http://localhost:5000/api/loan/override/${id}`,
-    {eligible,reason,suggestions},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
+export const updateOverride = async (id, eligible, reason, suggestions) => {
+  const response = await api.put(`loan/override/${id}`, {
+    eligible,
+    reason,
+    suggestions,
+  });
   return response.data;
 };
