@@ -29,8 +29,8 @@ function App() {
         <Route path="/register"                 element={<Register />} />
         <Route path="/"                         element={<Login />} />
          <Route path="/changepassword"          element={<ChangePassword />} />
-         <Route path="/forgotpassword"          element={<ForgotPassword/>}/>
-        <Route path="/resetpassword"            element={<ResetPassword/>}/>
+         <Route path="/forgot-password"         element={<ForgotPassword/>}/>
+        <Route path="/reset-password/:token"    element={<ResetPassword/>}/>
 
         <Route path="/admin/"                   element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/applications"       element={<PrivateRoute  role="admin"><ViewApplication /></PrivateRoute>} />

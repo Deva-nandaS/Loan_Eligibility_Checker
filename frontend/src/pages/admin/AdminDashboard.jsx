@@ -4,14 +4,14 @@ import { toast } from "react-toastify";
 import { getAdminDashboard } from "../../api/admindashboard";
 import { Sidebar } from "../../Components/Sidebar";
 
-  const Card = ({ label, value, color }) => {
-    return (
-      <div className="border rounded-lg border-t-teal-800 border-t-8 p-6 text-xl">
-        <p className="text-gray-500 text-sm font-medium">{label}</p>
-        <p className={`font-bold text-3xl mt-2 ${color}`}>{value}</p>
-      </div>
-    );
-  };
+const Card = ({ label, value, color }) => {
+  return (
+    <div className="border rounded-lg border-t-teal-800 border-t-8 p-6 text-xl">
+      <p className="text-gray-500 text-sm font-medium">{label}</p>
+      <p className={`font-bold text-3xl mt-2 ${color}`}>{value}</p>
+    </div>
+  );
+};
 
 export const AdminDashboard = () => {
   const [details, setDetails] = useState(null);
@@ -42,8 +42,16 @@ export const AdminDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card label="TOTAL USERS" value={details.userCount} color="" />
           <Card label="TOTAL APPLICATIONS" value={details.loanCount} color="" />
-          <Card label="APPROVED APPLICATIONS" value={details.approvedCount} color="text-green-600" />
-          <Card label="REJECTED APPLICATIONS" value={details.rejectedCount} color="text-red-600" />  
+          <Card
+            label="APPROVED APPLICATIONS"
+            value={details.approvedCount}
+            color="text-green-600"
+          />
+          <Card
+            label="REJECTED APPLICATIONS"
+            value={details.rejectedCount}
+            color="text-red-600"
+          />
         </div>
       </div>
     </div>

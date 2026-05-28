@@ -36,3 +36,53 @@
     transform: rotate(360deg);
   }
 }
+
+.metrics-table td {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+}
+
+.metrics-table th {
+  padding: 8px 12px;
+ border: 1px solid #9ca3af
+}
+
+.metrics-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+
+html, body {
+  overflow: hidden;
+  max-width: 100%;
+}
+
+* {
+  box-sizing: border-box; /* prevents elements from overflowing */
+}
+
+/* App.css */
+body {
+  overflow: hidden;
+}
+
+html {
+  scrollbar-gutter: stable; /* reserves scrollbar space always */
+}
+
+/* App.css */
+.view-table td {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+}
+
+.view-table th {
+  padding: 16px;
+  border: 1px solid #9ca3af;
+  text-align: center;
+}
+
+.view-table tbody tr:hover {
+  background-color: #f9fafb;
+  cursor: pointer;
+}

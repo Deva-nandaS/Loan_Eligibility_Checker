@@ -5,7 +5,14 @@ import { PiSpinnerGap } from "react-icons/pi";
 import { Sidebar } from "../../Components/Sidebar";
 import { getLoanHistory } from "../../api/apply";
 
-
+const Card = ({ label, value, color }) => {
+  return (
+    <div className="border rounded-lg w-80 border-t-teal-800 border-t-8 p-6 text-xl">
+      <p className="text-gray-500 text-sm font-medium">{label}</p>
+      <p className={`font-bold text-3xl mt-2 ${color}`}>{value}</p>
+    </div>
+  );
+};
 export const ApplicantDashboard = () => {
   const [details, setDetails] = useState(null);
 
@@ -47,28 +54,17 @@ export const ApplicantDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="border rounded-lg w-80 border-t-teal-800 border-t-8 p-6 text-xl">
-            <p className="text-gray-500 text-sm font-medium">
-              TOTAL APPLICATIONS
-            </p>
-            <p className="font-bold text-3xl mt-2">{details.loanCount}</p>
-          </div>
-          <div className="border rounded-lg border-t-teal-800 border-t-8 p-6 text-xl">
-            <p className="text-gray-500 text-sm font-medium">
-              APPROVED APPLICATIONS
-            </p>
-            <p className="font-bold text-3xl mt-2 text-green-600">
-              {details.approvedCount}
-            </p>
-          </div>
-          <div className="border rounded-lg border-t-teal-800 border-t-8 p-6 text-xl">
-            <p className="text-gray-500 text-sm font-medium">
-              REJECTED APPLICATIONS:
-            </p>
-            <p className="font-bold text-3xl mt-2 text-red-600">
-              {details.rejectedCount}
-            </p>
-          </div>
+          <Card label="TOTAL APPLICATIONS" value={details.loanCount} color="" />
+          <Card
+            label="APPROVED APPLICATIONS"
+            value={details.approvedCount}
+            color="text-green-600"
+          />
+          <Card
+            label="REJECTED APPLICATIONS"
+            value={details.rejectedCount}
+            color="text-red-600"
+          />
         </div>
       </div>
     </div>

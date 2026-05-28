@@ -6,12 +6,9 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import { getLoanHistory } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
 
-
 export const History = ({ onClose }) => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showProblem, setShowProblem] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [page, setPage] = useState(5);
   const [search, setSearch] = useState("");
 
@@ -19,7 +16,7 @@ export const History = ({ onClose }) => {
     const fetch = async () => {
       try {
         const data = await getLoanHistory();
-        await new Promise(resolve=>setTimeout(resolve,2000))
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         setHistory(data);
       } catch (err) {
       } finally {
@@ -36,7 +33,7 @@ export const History = ({ onClose }) => {
   if (loading)
     return (
       <div className="flex gap-2 h-screen items-center justify-center">
-        <PiSpinnerGap size={60} className="animate-spin text-teal-900"/>
+        <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
         <span className="font-bold text-3xl text-teal-900">Loading....</span>
       </div>
     );
@@ -62,7 +59,7 @@ export const History = ({ onClose }) => {
           <div className=" mt-6 text-lg text-slate-700">
             {" "}
             <p>
-              {history.length} application{history.length!==1?"s" : ""}
+              {history.length} application{history.length !== 1 ? "s" : ""}
             </p>
           </div>
         </div>
@@ -129,22 +126,41 @@ export const History = ({ onClose }) => {
                           className={`px-2 py-1 rounded-full text-xs font-bold
                          
                           ${item.eligible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                          onClick={() => {
-                            if (
-                              item.reasons?.length > 0 ||
-                              item.suggestions?.length > 0
-                            ) {
-                              //only if there are reasons and suggestions by admin in case of approval.
-                              setSelectedItem(item);
-                              setShowProblem(true);
-                            } else {
-                              setShowProblem(false);
-                            }
-                          }}
                         >
                           {item.eligible ? "APPROVED" : "REJECTED"}
                         </span>
-                        <span ><AiOutlineInfoCircle className="text-gray-500"/></span>
+
+                        <span className="relative group">
+                          <AiOutlineInfoCircle className="text-gray-500 cursor-pointer" />
+                      
+                             <div className="absolute hidden group-hover:block right-0 bottom-1 bg-white border p-3 shadow-lg rounded-lg w-48 z-10 text-xs">
+                          {item.reasons?.length > 0 && (
+                            <>
+                              <p className="font-semibold">Reasons:</p>
+                              {item.reasons.map((r, i) => (
+                                <p key={i}>{r}</p>
+                              ))}
+                            </>
+                          )}
+                          {item.suggestions?.length > 0 && (
+                            <>
+                              <p className="font-semibold">Suggestions:</p>
+                              {item.suggestions.map((s, i) => (
+                                <p key={i}>{s}</p>
+                              ))}
+                            </>
+                          )}
+                          {!item.reasons?.length &&
+                            !item.suggestions.length && (
+                              <p className="font-semibold text-gray-400">
+                                No info available
+                              </p>
+                            )}
+                            </div>
+
+                          
+                         
+                        </span>
                       </td>
                     </tr>
                   ))
@@ -185,7 +201,7 @@ export const History = ({ onClose }) => {
           </div>
         </div>
       </div>
-      {showProblem && (
+      {/* {showProblem && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className=" bg-white shadow-2xl w-[600px] max-h-[80vh] rounded-xl border">
             <div className="flex flex-col p-3 gap-3">
@@ -220,7 +236,7 @@ export const History = ({ onClose }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

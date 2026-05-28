@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../../api/auth";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -16,9 +17,8 @@ export const ForgotPassword = () => {
     }
     try {
       setLoading(true);
-      const response = await ForgotPassword(email);
-      setEmail(response);
-      toast.success("Reset link send to your email");
+      await forgotPassword(email);
+      toast.success("Reset link sent to your email");
       setEmail("")
     } catch (err) {
       if (err.response?.status === 400) toast.error("Email not found");

@@ -5,6 +5,7 @@ import { PiSpinnerGap } from "react-icons/pi";
 import { Sidebar } from "../../Components/Sidebar";
 import { getApplicationById, updateOverride } from "../../api/admindashboard";
 import { Button } from "../../Components/ui/Button";
+import { getApprovedFields, getRejectedFields } from "../../constants";
 
 const Card = ({ label, value }) => {
   return (
@@ -89,65 +90,11 @@ export const ApplicationDetail = () => {
       </div>
     );
 
-  const approvedFields = [
-    { label: "Applicant", value: showDetails.name },
-    { label: "Status", value: showDetails.eligible ? "Approved" : "Rejected" },
-    { label: "Employee type", value: showDetails.emptype },
-    { label: "Job Tenure", value: showDetails.tenure },
-    { label: "Income", value: showDetails.income },
-    { label: "Debt", value: showDetails.debt },
-    { label: "Debt Ratio", value: showDetails.debtRatio },
-    { label: "Credit Score", value: showDetails.credit },
-    { label: "Risk Category", value: showDetails.riskCategory },
-    { label: "Loan Purpose", value: showDetails.purpose },
-    { label: "Approved amount", value: showDetails.amount },
-    { label: "Requested amount", value: showDetails.amount },
-    { label: "Annual Interest Rate", value: showDetails.interestRate },
-    { label: "EMI", value: showDetails.emi },
-    { label: "Total Payable", value: showDetails.totalPayable },
-    {
-      label: "Total Interest Payable",
-      value: showDetails.totalInterestPayable,
-    },
-    {
-      label: "Reasons",
-      value:
-        showDetails.reasons.length > 0 ? showDetails.reasons.join(",") : "N/A",
-    },
-    {
-      label: "Suggestions",
-      value:
-        showDetails.suggestions.length > 0
-          ? showDetails.suggestions.join(",")
-          : "N/A",
-    },
-  ];
+ 
+ 
 
-  const rejectedFields = [
-    { label: "Applicant", value: showDetails.name },
-    { label: "Status", value: showDetails.eligible ? "Approved" : "Rejected" },
-    { label: "Age", value: showDetails.age },
-    { label: "Employee type:", value: showDetails.emptype },
-    { label: "Job Tenure:", value: showDetails.tenure },
-    { label: "Income", value: showDetails.income },
-    { label: "Debt", value: showDetails.debt },
-    { label: "Credit Score:", value: showDetails.credit },
-    { label: "Loan Purpose:", value: showDetails.purpose },
-    { label: "Requested Amount", value: showDetails.amount },
-    { label: "Loan Tenure", value: showDetails.loanTenure },
-    {
-      label: "Reasons:",
-      value:
-        showDetails.reasons.length > 0 ? showDetails.reasons.join(",") : "N/A",
-    },
-    {
-      label: "Suggestions:",
-      value:
-        showDetails.suggestions.length > 0
-          ? showDetails.suggestions.join(",")
-          : "N/A",
-    },
-  ];
+  const fields=showDetails.eligible? getApprovedFields(showDetails):getRejectedFields(showDetails)
+
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -156,19 +103,14 @@ export const ApplicationDetail = () => {
           className={`bg-white fixed rounded-xl shadow-2xl p-8 w-[500px] max-w-lg border border-teal-800
            `}
         >
-          {showDetails.eligible ? (
+       
             <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
-              {approvedFields.map(({ label, value }) => (
-                <div key={label} label={label} value={value}></div>
+              {fields.map(({ label, value }) => (
+                <Card key={label} label={label} value={value}/>
               ))}
             </div>
-          ) : (
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
-              {rejectedFields.map(([label, value]) => (
-                <div key={label} label={label} value={value}></div>
-              ))}
-            </div>
-          )}
+      
+      
 
           <div className="flex gap-4 mt-8">
             <Button
@@ -207,7 +149,7 @@ export const ApplicationDetail = () => {
                       type="text"
                       value={reason}
                       placeholder="Enter reason"
-                      className="border p-2 rounded text-black"
+                      className="border p-2 rounded "
                       onChange={(e) => setReason(e.target.value)}
                     />
                   </div>

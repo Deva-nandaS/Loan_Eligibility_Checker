@@ -51,46 +51,27 @@ export const ViewApplication = () => {
 
         <div className=" border rounded overflow-hidden bg-white">
           <div>
-            <table className="min-w-full w-full text-left text-sm ">
+            <table className="view-table min-w-full w-full text-left text-sm ">
               <thead className="bg-gray-50 text-gray-600 uppercase">
                 <tr>
                   {["Name", "Amount", "Status", "Actions"].map((a) => (
-                    <th
-                      key={a}
-                      className="p-4 border border-gray-400 text-center"
-                    >
-                      {a}
-                    </th>
+                    <th key={a}>{a}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                
                 {filteredViews.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="p-2 text-gray-500 text-center">
-                      No loan applications found
-                    </td>
+                    <td colSpan="8">No loan applications found</td>
                   </tr>
                 ) : (
                   filteredViews.slice(0, page).map((item) => (
-                    <tr
-                      key={item._id}
-                      className="hover-bg-gray-500 cursor-pointer"
-                    >
-                      <td className="p-4 border border-gray-300">
-                        {item.name}
-                      </td>
+                    <tr key={item._id}>
+                      <td>{item.name}</td>
+                      <td>{item.amount}</td>
+                      <td>{item.eligible ? "Approved" : "Rejected"}</td>
 
-                      <td className="p-4 border border-gray-300">
-                        {item.amount}
-                      </td>
-
-                      <td className="p-4 border border-gray-300">
-                        {item.eligible ? "Approved" : "Rejected"}
-                      </td>
-
-                      <td className="p-4 border border-gray-300 text-center">
+                      <td>
                         <Button
                           className="text-white bg-teal-800 px-6 py-2 rounded-lg mr-5"
                           onClick={() =>
@@ -109,10 +90,7 @@ export const ViewApplication = () => {
 
               <tfoot>
                 <tr>
-                  <td
-                    colSpan="8"
-                    className="p-4 border border-gray-300 text-gray-500"
-                  >
+                  <td colSpan="8">
                     <div className="flex gap-2">
                       <p>
                         Showing 1 to {Math.min(views.length, page)} of{" "}

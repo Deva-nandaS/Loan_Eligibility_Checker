@@ -107,7 +107,7 @@ export const Login = () => {
             />
             <div className="flex justify-end ">
               {" "}
-              <Link to="/forgotpassword" className="text-blue-500">
+              <Link to="/forgot-password" className="text-blue-500">
                 Forgot password?
               </Link>
             </div>

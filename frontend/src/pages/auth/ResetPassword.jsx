@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { resetPassword } from "../../api/auth";
 
 export const ResetPassword = () => {
+    const navigate = useNavigate();
+    const {token}=useParams();
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!newPassword && !confirmPassword) {
+    if (!newPassword || !confirmPassword) {
       toast.error("Fill this field");
+      return;
     }
 
     if (newPassword !== confirmPassword) {
@@ -20,10 +24,9 @@ export const ResetPassword = () => {
       return;
     }
     try {
-      const response = await ResetPassword(newPassword);
-      setNewPassword(response);
-
+      await resetPassword(token,newPassword);
       toast.success("Password Updated successfully");
+      navigate("/");
     } catch (err) {
       toast.error("Update failed");
     }
@@ -64,7 +67,7 @@ export const ResetPassword = () => {
               <button
                 className="bg-gray-200 font-bold text-black py-2 rounded mt-5 px-12"
                 type="button"
-                onClick={() => navigate("/admin/")}
+                onClick={() => navigate("/")}
               >
                 BACK
               </button>

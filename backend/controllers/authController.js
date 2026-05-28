@@ -108,7 +108,7 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-exports.ForgotPassword = async (req, res) => {
+exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -139,19 +139,18 @@ exports.ForgotPassword = async (req, res) => {
       html: `
       <h2>Reset your password</h2>
       <p>Click the link below to reset your password.</p>
-      <a href="http://localhost:5000/resetpassword/${token}">Reset Password</a>`,
+      <a href="http://localhost:3000/reset-password/${token}">Reset Password</a>`,
     });
 
     res.status(200).json({
       message: "Reset link sent to your email",
     });
   } catch (err) {
-    (res.status(500),
-      json({ success: false, message: err.message, data: null }));
+    res.status(500).json({ success: false, message: err.message, data: null });
   }
 };
 
-exports.ResetPassword = async (req, res) => {
+exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { newPassword } = req.body;
@@ -174,7 +173,7 @@ exports.ResetPassword = async (req, res) => {
     await user.save();
     res.status(200).json({ success: true, message: "Password updated" });
   } catch (err) {
-    if (err.name === "TokenExpired") {
+    if (err.name === "TokenExpiredError") {
       return res
         .status(401)
         .json({ success: false, message: "Link expired", data: null });
