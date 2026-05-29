@@ -8,7 +8,6 @@ const authorizeRole = require("../middleware/authorizeRole");
 
 router.get(
   "/applicantdashboard",
-  authMiddleware,
   authorizeRole("applicant"),
   getApplicantDashboard,
 );

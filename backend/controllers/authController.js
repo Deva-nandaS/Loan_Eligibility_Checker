@@ -1,8 +1,10 @@
 const User = require("../models/User");
+const loan = require("../models/loan.model");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const loan = require("../models/loan.model");
+
 
 exports.register = async (req, res) => {
   try {
@@ -183,6 +185,8 @@ exports.resetPassword = async (req, res) => {
       .json({ success: false, message: err.message, data: null });
   }
 };
+
+
 exports.getAdminDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");

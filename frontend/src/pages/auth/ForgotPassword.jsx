@@ -56,7 +56,7 @@ export const ForgotPassword = () => {
               <button
                 className="bg-gray-200 font-bold text-black py-2 rounded mt-5 px-12"
                 type="button"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/")}
               >
                 BACK
               </button>

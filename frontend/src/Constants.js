@@ -82,3 +82,15 @@ export const getRejectedFields = (d) => [
   { label: "Reasons",          value: d.reasons.length > 0 ? d.reasons.join(", ") : "N/A" },
   { label: "Suggestions",      value: d.suggestions.length > 0 ? d.suggestions.join(", ") : "N/A" },
 ];
+
+
+export const HISTORY_TABLE_HEADERS = [
+  "Requested Amount",
+  "Approved Amount", 
+  "Annual Interest Rate",
+  "Monthly EMI",
+  "Total Paid",
+  "Interest Paid",
+  "Loan Tenure",
+  "Status",
+];

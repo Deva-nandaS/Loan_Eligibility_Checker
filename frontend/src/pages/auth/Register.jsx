@@ -1,29 +1,34 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { registerUser } from "../../api/auth";
+import { VerifyOtp } from "./VerifyOtp";
 
 export const Register = () => {
+  const navigate=useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) {
-      alert("Fill name field");
+    if (!name ) {
+      toast.error("Fill name field");
       return;
     }
     if (password !== confirmPassword) {
-      alert("Password mismatch");
-
+      toast.error("Password mismatch");
       return;
     }
     try {
       await registerUser(name, email, password, "applicant");
       toast.success("Registered successfully");
+      navigate("/verify-otp",{state:{email}})
+
     } catch (err) {
       toast.error("Registration failed");
     }
@@ -56,7 +61,8 @@ export const Register = () => {
               value={name}
               placeholder="Name"
               className="border p-2 rounded mb-3"
-              onChange={(e) => setName(e.target.value)}
+              required
+              onChange={(e) => setName(e.target.value) }
             />
 
             <label className="font-bold">Email</label>
@@ -65,6 +71,7 @@ export const Register = () => {
               value={email}
               placeholder="Email"
               className="border p-2 rounded mb-3"
+                 required
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -74,6 +81,7 @@ export const Register = () => {
               value={password}
               placeholder="Password"
               className="border p-2 rounded mb-3"
+                 required
               onChange={(e) => setPassword(e.target.value)}
             />
 
@@ -83,6 +91,7 @@ export const Register = () => {
               value={confirmPassword}
               placeholder="Confirm Password"
               className="border p-2 rounded mb-3"
+                 required
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
@@ -95,7 +104,7 @@ export const Register = () => {
               className="bg-teal-800 text-white py-2 rounded"
               type="submit"
             >
-              Register
+              NEXT
             </button>
           </form>
         </div>

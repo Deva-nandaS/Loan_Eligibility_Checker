@@ -145,6 +145,11 @@ const updateOverride = async (req, res) => {
       suggestions: [suggestions],
     };
     if (eligible === true) {
+      if (loan.emptype === "Unemployed") {
+        return res.status(400).json({
+          message: "Cannot approve — applicant is Unemployed",
+        });
+      }
       const calc = loanCalculator(loan);
       const eligibility = loanEligibility(loan);
       console.log("calculated data", calc);

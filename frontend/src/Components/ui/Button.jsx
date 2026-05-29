@@ -3,10 +3,11 @@ export const Button = ({
   onClick,
   type = "button",
   className = "bg-teal-900",
+  disabled
 }) => {
   return (
-    <button type={type} onClick={onClick} className={className}>
-      {children}
+    <button type={type} onClick={onClick} className={className} disabled={disabled}>
+      {children} 
     </button>
   );
 };

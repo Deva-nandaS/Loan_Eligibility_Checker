@@ -1,14 +1,20 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { PiSpinnerGap } from "react-icons/pi";
 
 import { Sidebar } from "../../Components/Sidebar";
 import { getApplicationById, updateOverride } from "../../api/admindashboard";
 import { Button } from "../../Components/ui/Button";
 import { getApprovedFields, getRejectedFields } from "../../constants";
+import { toast } from "react-toastify";
 
 const Card = ({ label, value }) => {
-  return (
+  const isTwo = label === "Reasons" || label === "Suggestions";
+  return isTwo ? (
+    <div className="flex flex-col gap-1 ">
+      <span className="font-semibold text-gray-600">{label}</span>
+      <span className="text-black">{value}</span>
+    </div>
+  ) : (
     <div className="flex justify-between ">
       <span className="font-semibold text-gray-600">{label}</span>
       <span className="font-medium mr-5">{value}</span>
@@ -38,6 +44,7 @@ export const ApplicationDetail = () => {
   }, [id, navigate]);
 
   const handleOverride = () => {
+     if (showDetails.emptype === "Unemployed") return;
     setShowOverride(true);
   };
   const handleConfirm = async () => {
@@ -77,7 +84,11 @@ export const ApplicationDetail = () => {
       setReason(" ");
       setSuggestion(" ");
     } catch (err) {
-      console.log("Error:", err);
+      if (err?.response?.status === 400) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("something went wrong");
+      }
     }
 
     setShowOverride(false);
@@ -90,10 +101,9 @@ export const ApplicationDetail = () => {
       </div>
     );
 
- 
- 
-
-  const fields=showDetails.eligible? getApprovedFields(showDetails):getRejectedFields(showDetails)
+  const fields = showDetails.eligible
+    ? getApprovedFields(showDetails)
+    : getRejectedFields(showDetails);
 
   return (
     <div className="flex h-screen">
@@ -103,15 +113,11 @@ export const ApplicationDetail = () => {
           className={`bg-white fixed rounded-xl shadow-2xl p-8 w-[500px] max-w-lg border border-teal-800
            `}
         >
-       
-            <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
-              {fields.map(({ label, value }) => (
-                <Card key={label} label={label} value={value}/>
-              ))}
-            </div>
-      
-      
-
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
+            {fields.map(({ label, value }) => (
+              <Card key={label} label={label} value={value} />
+            ))}
+          </div>
           <div className="flex gap-4 mt-8">
             <Button
               className="flex-1 bg-gray-400 border text-black rounded-lg font-bold py-2 hover:bg-gray-200"
@@ -119,23 +125,37 @@ export const ApplicationDetail = () => {
             >
               Back
             </Button>
-
-            <Button
-              className="flex-1 bg-teal-800  text-white rounded-lg font-bold py-2 hover:bg-gray-800"
-              onClick={handleOverride}
-            >
-              Override
-            </Button>
+            <div className="relative group flex-1">
+              <Button
+                className={`w-full text-white rounded-lg font-bold py-2 
+        ${
+          showDetails.emptype === "Unemployed"
+            ? "bg-gray-400 cursor-not-allowed opacity-50"
+            : "bg-teal-800 hover:bg-gray-800"
+        }`}
+                onClick={handleOverride}
+                disabled={showDetails.emptype === "Unemployed"}
+              >
+                Override
+              </Button>
+              {showDetails.emptype === "Unemployed" && (
+                <div
+                  className="absolute bottom-10 left-0 hidden group-hover:block
+          bg-gray-800 text-white text-xs rounded p-2 w-48 z-10"
+                >
+                  Cannot override — applicant is Unemployed
+                </div>
+              )}
+            </div>{" "}
+       
             <Button
               className="flex-1 bg-teal-800 text-white rounded-lg font-bold py-2 hover:bg-gray-800"
-              onClick={() =>
-                navigate("/admin/AdminDashboard", { replace: true })
-              }
+              onClick={() => navigate("/admin/", { replace: true })}
             >
               Done
             </Button>
-          </div>
-
+          </div>{" "}
+      
           {showOverride && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div className="border-2 border-teal-700 bg-white shadow-2xl w-[450px] rounded-xl">

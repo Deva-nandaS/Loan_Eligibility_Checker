@@ -86,3 +86,13 @@ html {
   background-color: #f9fafb;
   cursor: pointer;
 }
+
+.history-table td {
+  padding: 16px;
+  border: 1px solid #d1d5db;
+}
+
+.history-table th {
+  padding: 24px;
+  border: 1px solid #9ca3af;
+}

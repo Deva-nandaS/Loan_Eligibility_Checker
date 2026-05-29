@@ -8,6 +8,11 @@ import { Input } from "../../Components/ui/Input";
 import { Button } from "../../Components/ui/Button";
 import { Sidebar } from "../../Components/Sidebar";
 import { createLoan } from "../../api/apply";
+import {
+  ELIGIBILITY_THRESHOLDS,
+  EMPLOYMENT_TYPES,
+  LOAN_PURPOSES,
+} from "../../constants";
 
 export const Apply = () => {
   const location = useLocation();
@@ -33,7 +38,10 @@ export const Apply = () => {
     if (!name) errors.name = "Name is required";
     if (!age) {
       errors.age = "Age is required";
-    } else if (age < 21 || age > 65) {
+    } else if (
+      age < ELIGIBILITY_THRESHOLDS.MIN_AGE ||
+      age > ELIGIBILITY_THRESHOLDS.MAX_AGE
+    ) {
       errors.age = "Age must be between 21 and 65";
     }
 
@@ -42,12 +50,15 @@ export const Apply = () => {
     }
     if (!credit) {
       errors.credit = "Credit score is required";
-    } else if (Number(credit) < 650) {
-      errors.credit = "Minimum credit score is 650";
+    } else if (Number(credit) < ELIGIBILITY_THRESHOLDS.MIN_CREDIT_SCORE) {
+      errors.credit = `Minimum credit score is ${ELIGIBILITY_THRESHOLDS.MIN_CREDIT_SCORE} `;
     }
     if (!tenure) {
       errors.tenure = "Job tenure is required";
-    } else if (emptype === "Salaried" && Number(tenure) < 1) {
+    } else if (
+      emptype === "Salaried" &&
+      Number(tenure) < ELIGIBILITY_THRESHOLDS.MIN_JOB_TENURE_YEARS
+    ) {
       errors.tenure = "Minimum 1 year tenure required";
     }
 
@@ -107,13 +118,14 @@ export const Apply = () => {
   const isFormValid =
     !!name &&
     !!age &&
-    Number(age) >= 21 &&
-    Number(age) <= 65 &&
+    Number(age) >= ELIGIBILITY_THRESHOLDS.MIN_AGE &&
+    Number(age) <= ELIGIBILITY_THRESHOLDS.MAX_AGE &&
     !!income &&
     !!credit &&
-    Number(credit) >= 650 &&
+    Number(credit) >= ELIGIBILITY_THRESHOLDS.MIN_CREDIT_SCORE &&
     !!tenure &&
-    (emptype !== "Salaried" || Number(tenure) >= 1) &&
+    (emptype !== "Salaried" ||
+      Number(tenure) >= ELIGIBILITY_THRESHOLDS.MIN_JOB_TENURE_YEARS) &&
     !!loanTenure &&
     !!amount;
 
@@ -201,187 +213,185 @@ export const Apply = () => {
                   {errors.income && (
                     <p className="text-red-500 text-xs mt-1">{errors.income}</p>
                   )}
-                  </div>
-              
+                </div>
 
                 {/* loanamount */}
                 <div>
-                <div className=" flex items-center gap-1.5">
-                  <label className="font-bold mb-1 block">Loan amount</label>
-                  <Tooltip
-                    field="loanamount"
-                    message="Amount cannot exceed 40% of income"
+                  <div className=" flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">Loan amount</label>
+                    <Tooltip
+                      field="loanamount"
+                      message="Amount cannot exceed 40% of income"
+                    />
+                  </div>
+                  <Input
+                    className="border-2 rounded-lg w-full p-2"
+                    type="number"
+                    placeholder="eg:50,000"
+                    value={amount}
+                    onChange={handleChange(
+                      setAmount,
+                      "amount",
+                      "Amount is required",
+                    )}
+                    required
+                  />
+                  {errors.amount && (
+                    <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
+                  )}
+                </div>
+
+                {/* loantenure */}
+                <div>
+                  <div className=" flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">
+                      Loan tenure(in months)
+                    </label>
+
+                    <Tooltip
+                      field="loanTenure"
+                      message="Enter how many months to repay the loan."
+                    />
+                  </div>
+
+                  <Input
+                    className="border-2 rounded-lg w-full p-2"
+                    type="number"
+                    placeholder="eg: 12"
+                    value={loanTenure}
+                    onChange={handleChange(
+                      setloanTenure,
+                      "loanTenure",
+                      "Loan tenure is required",
+                    )}
+                    required
                   />
                 </div>
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg:50,000"
-                  value={amount}
-                  onChange={handleChange(
-                    setAmount,
-                    "amount",
-                    "Amount is required",
-                  )}
-                  required
-                />
-                {errors.amount && (
-                  <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
-                )}
-              </div>
+                {/* credit */}
+                <div>
+                  <div className="relative flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">Credit Score</label>
 
-              {/* loantenure */}
-              <div>
-                <div className=" flex items-center gap-1.5">
+                    <Tooltip
+                      field="credit"
+                      message="Minimum credit score should be 650."
+                    />
+                  </div>
+
+                  <Input
+                    className="border-2 rounded-lg w-full p-2"
+                    type="number"
+                    placeholder="eg:700"
+                    value={credit}
+                    onChange={handleChange(
+                      setCredit,
+                      "credit",
+                      "Credit score is required",
+                    )}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="font-bold mb-1 block">Loan Purpose</label>
+                  <select
+                    className="border-2 rounded-lg w-full p-2"
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                  >
+                    {LOAN_PURPOSES.map((p) => (
+                      <option key={p}>{p}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* debt */}
+                <div>
+                  <label className="font-bold mb-1 block">Existing Debt</label>
+                  <Input
+                    className="border-2 rounded-lg w-full p-2"
+                    type="number"
+                    placeholder="eg:10,000"
+                    value={debt}
+                    onChange={handleChange(
+                      setDebt,
+                      "debt",
+                      "Debt field is required",
+                    )}
+                    required
+                  />
+                  {errors.debt && (
+                    <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
+                  )}
+                </div>
+
+                {/* employmentType */}
+                <div>
                   <label className="font-bold mb-1 block">
-                    Loan tenure(in months)
+                    Employment Type
                   </label>
-
-                  <Tooltip
-                    field="loanTenure"
-                    message="Enter how many months to repay the loan."
-                  />
+                  <select
+                    className="border-2 rounded-lg w-full p-2"
+                    value={emptype}
+                    onChange={(e) => setEmptype(e.target.value)}
+                  >
+                    {EMPLOYMENT_TYPES.map((p) => (
+                      <option key={p}>{p}</option>
+                    ))}
+                  </select>
                 </div>
 
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg: 12"
-                  value={loanTenure}
-                  onChange={handleChange(
-                    setloanTenure,
-                    "loanTenure",
-                    "Loan tenure is required",
-                  )}
-                  required
-                />
-              </div>
-              {/* credit */}
-              <div>
-                <div className="relative flex items-center gap-1.5">
-                  <label className="font-bold mb-1 block">Credit Score</label>
+                {/* experience */}
+                <div>
+                  <div className=" relative flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">
+                      {" "}
+                      Years of Experience
+                    </label>
 
-                  <Tooltip
-                    field="credit"
-                    message="Minimum credit score should be 650."
+                    <Tooltip
+                      field="experience"
+                      message="How many years of experience in your current job"
+                    />
+                  </div>
+                  <Input
+                    className="border-2 rounded-lg w-full p-2"
+                    type="number"
+                    placeholder="eg:2"
+                    value={tenure}
+                    onChange={handleChange(
+                      setTenure,
+                      "tenure",
+                      "Job Tenure field is required",
+                    )}
+                    required
                   />
+                  {errors.tenure && (
+                    <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>
+                  )}
                 </div>
 
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg:700"
-                  value={credit}
-                  onChange={handleChange(
-                    setCredit,
-                    "credit",
-                    "Credit score is required",
-                  )}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="font-bold mb-1 block">Loan Purpose</label>
-                <select
-                  className="border-2 rounded-lg w-full p-2"
-                  value={purpose}
-                  onChange={(e) => setPurpose(e.target.value)}
-                >
-                  <option>Home</option>
-                  <option>Education</option>
-                  <option>Vehicle</option>
-                  <option>Business</option>
-                  <option>Personal</option>
-                </select>
-              </div>
-
-              {/* debt */}
-              <div>
-                <label className="font-bold mb-1 block">Existing Debt</label>
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg:10,000"
-                  value={debt}
-                  onChange={handleChange(
-                    setDebt,
-                    "debt",
-                    "Debt field is required",
-                  )}
-                  required
-                />
-                {errors.debt && (
-                  <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
-                )}
-              </div>
-
-              {/* employmentType */}
-              <div>
-                <label className="font-bold mb-1 block">Employment Type</label>
-                <select
-                  className="border-2 rounded-lg w-full p-2"
-                  value={emptype}
-                  onChange={(e) => setEmptype(e.target.value)}
-                >
-                  <option>Salaried</option>
-                  <option>Self Employed</option>
-                  <option>Freelance</option>
-                  <option>Unemployed</option>
-                </select>
-              </div>
-
-              {/* experience */}
-              <div>
-                <div className=" relative flex items-center gap-1.5">
-                  <label className="font-bold mb-1 block">
-                    {" "}
-                    Years of Experience
-                  </label>
-
-                  <Tooltip
-                    field="experience"
-                    message="How many years of experience in your current job"
-                  />
+                <div className="col-span-2  flex items-center justify-center w-fu;;">
+                  <Button
+                    disabled={loading || !isFormValid}
+                    type="submit"
+                    className={` mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      loading || !isFormValid
+                        ? "bg-gray-400"
+                        : "bg-teal-900 cursor-pointer"
+                    }`}
+                  >
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <PiSpinnerGap size={34} className="animate-spin" />
+                        Submitting...
+                      </div>
+                    ) : (
+                      "SUBMIT"
+                    )}
+                  </Button>
                 </div>
-                <Input
-                  className="border-2 rounded-lg w-full p-2"
-                  type="number"
-                  placeholder="eg:2"
-                  value={tenure}
-                  onChange={handleChange(
-                    setTenure,
-                    "tenure",
-                    "Job Tenure field is required",
-                  )}
-                  required
-                />
-                {errors.tenure && (
-                  <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>
-                )}
               </div>
-
-              <div className="col-span-2  flex items-center justify-center w-fu;;">
-                <Button
-                  disabled={loading || !isFormValid}
-                  type="submit"
-                  className={` mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    loading || !isFormValid
-                      ? "bg-gray-400"
-                      : "bg-teal-900 cursor-pointer"
-                  }`}
-                >
-                  {loading ? (
-                    <div className="flex items-center justify-center">
-                      <PiSpinnerGap size={34} className="animate-spin" />
-                      Submitting...
-                    </div>
-                  ) : (
-                    "SUBMIT"
-                  )}
-                </Button>
-              </div>
-            </div>
             </div>
           </form>
         </div>

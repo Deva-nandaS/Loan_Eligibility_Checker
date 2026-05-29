@@ -8,6 +8,7 @@ import { Register } from "./pages/auth/Register";
 import { ChangePassword } from "./pages/auth/ChangePassword";
 import { ForgotPassword } from "./pages/auth/ForgotPassword";
 import { ResetPassword } from "./pages/auth/ResetPassword";
+import { VerifyOtp } from "./pages/auth/VerifyOtp";
 
 import { NotFound } from "./pages/auth/NotFound";
 import { Apply } from "./pages/applicant/Apply"; 
@@ -21,6 +22,7 @@ import { Metrics } from "./pages/admin/Metrics";
 import { PrivateRoute } from "./Components/PrivateRoute";
 
 
+
 function App() {
   return (
     <>
@@ -30,8 +32,8 @@ function App() {
         <Route path="/"                         element={<Login />} />
          <Route path="/changepassword"          element={<ChangePassword />} />
          <Route path="/forgot-password"         element={<ForgotPassword/>}/>
-        <Route path="/reset-password/:token"    element={<ResetPassword/>}/>
-
+         <Route path="/reset-password/:token"   element={<ResetPassword/>}/>
+         <Route path="/verify-otp"              element={<VerifyOtp/>}/>
         <Route path="/admin/"                   element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/applications"       element={<PrivateRoute  role="admin"><ViewApplication /></PrivateRoute>} />
         <Route path="/admin/applications/:id"   element={<PrivateRoute  role="admin"><ApplicationDetail/></PrivateRoute>} />   

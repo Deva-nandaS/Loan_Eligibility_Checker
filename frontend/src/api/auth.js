@@ -1,7 +1,7 @@
-import api from "./api";
+import axiosInstance from "./api";
 
 export const registerUser = async (name, email, password, role) => {
-  const response = await api.post(`/auth/register`, {
+  const response = await axiosInstance.post(`/auth/register`, {
     name,
     email,
     password,
@@ -12,7 +12,7 @@ export const registerUser = async (name, email, password, role) => {
 };
 
 export const loginUser = async (email, password) => {
-  const response = await api.post(`/auth/login`, {
+  const response = await axiosInstance.post(`/auth/login`, {
     email,
     password,
   });
@@ -20,7 +20,7 @@ export const loginUser = async (email, password) => {
 };
 
 export const changePassword = async (password, newPassword) => {
-  const response = await api.put(`/auth/changePassword`, {
+  const response = await axiosInstance.put(`/auth/changePassword`, {
     password,
     newPassword,
   });
@@ -29,7 +29,7 @@ export const changePassword = async (password, newPassword) => {
 };
 
 export const forgotPassword = async (email) => {
-  const response = await api.post(`/auth/forgotpassword`, {
+  const response = await axiosInstance.post(`/auth/forgotpassword`, {
     email,
   });
 
@@ -37,8 +37,13 @@ export const forgotPassword = async (email) => {
 };
 
 export const resetPassword = async (token, newPassword) => {
-  const response = await api.post(`/auth/resetpassword/${token}`, {
+  const response = await axiosInstance.post(`/auth/resetpassword/${token}`, {
     newPassword,
   });
   return response.data;
 };
+
+export const verifyOtp=async(email)=>{
+  const response=await axiosInstance.post(`/auth/verifyotp`,{email});
+  return response.data
+}

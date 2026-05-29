@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { IoCloseSharp } from "react-icons/io5";
 import { PiSpinnerGap } from "react-icons/pi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+import { HISTORY_TABLE_HEADERS } from "../../constants";
 
 import { getLoanHistory } from "../../api/apply";
 import { Sidebar } from "../../Components/Sidebar";
@@ -65,20 +65,11 @@ export const History = ({ onClose }) => {
         </div>
         <div className="border rounded overflow-hidden bg-white mt-20">
           <div className="overflow-x-auto">
-            <table className="min-w-full w-full text-left border-collapse text-sm">
+            <table className="history-table min-w-full w-full text-left border-collapse text-sm">
               <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
                 <tr>
-                  {[
-                    "Requested Amount",
-                    "Approved Amount",
-                    "Annual Interest Rate",
-                    "Monthly EMI",
-                    "Total Paid",
-                    "Interest Paid",
-                    "Loan Tenure",
-                    "Status",
-                  ].map((h) => (
-                    <th key={h} className="p-6 border border-gray-400">
+                  {HISTORY_TABLE_HEADERS.map((h) => (
+                    <th key={h} >
                       {h}
                     </th>
                   ))}
@@ -96,32 +87,32 @@ export const History = ({ onClose }) => {
                   filteredHistory.slice(0, page).map((item) => (
                     <tr
                       key={item._id}
-                      className="hover:bg-gray-50 cursor-pointer"
+                    
                     >
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.amount}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.eligible ? `${item.amount}` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.interestRate ? `${item.interestRate}%` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.emi ? `${item.emi}` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.totalPayable ? `${item.totalPayable}` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.totalInterestPayable
                           ? `${item.totalInterestPayable}`
                           : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300">
+                      <td >
                         {item.loanTenure ? `${item.loanTenure} months` : "N/A"}
                       </td>
-                      <td className="p-4 border border-gray-300 flex justify-between items-center">
+                      <td className="flex justify-between items-center">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold
                          

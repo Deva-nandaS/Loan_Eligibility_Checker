@@ -1,6 +1,6 @@
-import api from "./api";
+import axiosInstance from "./api";
 
 export const getApplicantDashboard = async (id) => {
-  const response = await api.get("applicant/applicantdashboard");
+  const response = await axiosInstance.get("applicant/applicantdashboard");
   return response.data;
 };
