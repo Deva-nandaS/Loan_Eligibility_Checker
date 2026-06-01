@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "applicant"],
     default: "applicant",
   },
+
 });
 
 module.exports = mongoose.model("User", userSchema);

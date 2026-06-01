@@ -34,6 +34,7 @@ function App() {
          <Route path="/forgot-password"         element={<ForgotPassword/>}/>
          <Route path="/reset-password/:token"   element={<ResetPassword/>}/>
          <Route path="/verify-otp"              element={<VerifyOtp/>}/>
+
         <Route path="/admin/"                   element={<PrivateRoute  role="admin"><AdminDashboard /></PrivateRoute>} />
         <Route path="/admin/applications"       element={<PrivateRoute  role="admin"><ViewApplication /></PrivateRoute>} />
         <Route path="/admin/applications/:id"   element={<PrivateRoute  role="admin"><ApplicationDetail/></PrivateRoute>} />   

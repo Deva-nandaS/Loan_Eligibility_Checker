@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { registerUser } from "../../api/auth";
-import { VerifyOtp } from "./VerifyOtp";
+import { sendOtp } from "../../api/auth";
 
 export const Register = () => {
   const navigate=useNavigate();
@@ -25,12 +24,12 @@ export const Register = () => {
       return;
     }
     try {
-      await registerUser(name, email, password, "applicant");
-      toast.success("Registered successfully");
-      navigate("/verify-otp",{state:{email}})
+      await sendOtp(name,email,password);
+      toast.success("OTP sent successfully");
+      navigate("/verify-otp",{state:{name,email,password,role:"applicant"}})
 
     } catch (err) {
-      toast.error("Registration failed");
+      toast.error(err.response?.data?.message||"Registration failed");
     }
   };
 

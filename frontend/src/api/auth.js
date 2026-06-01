@@ -1,15 +1,14 @@
 import axiosInstance from "./api";
 
-export const registerUser = async (name, email, password, role) => {
-  const response = await axiosInstance.post(`/auth/register`, {
-    name,
-    email,
-    password,
-    role,
-  });
-
+export const sendOtp = async (name,email,password,role) => {
+  const response = await axiosInstance.post(`/auth/sendotp`, { name,email,password,role });
   return response.data;
 };
+export const verifyOtp = async (email, otp) => {
+  const response = await axiosInstance.post(`/auth/verifyotp`, { email, otp });
+  return response.data;
+};
+
 
 export const loginUser = async (email, password) => {
   const response = await axiosInstance.post(`/auth/login`, {
@@ -43,7 +42,3 @@ export const resetPassword = async (token, newPassword) => {
   return response.data;
 };
 
-export const verifyOtp=async(email)=>{
-  const response=await axiosInstance.post(`/auth/verifyotp`,{email});
-  return response.data
-}

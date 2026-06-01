@@ -1,45 +1,10 @@
 const User = require("../models/User");
 const loan = require("../models/loan.model");
+const Otp = require("../models/Otp.model");
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-
-
-exports.register = async (req, res) => {
-  try {
-    const { name, email, password, role } = req.body;
-
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User already reg", data: null });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-    });
-    res.status(201).json({
-      success: true,
-      message: "User registered",
-
-      data: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message, data: null });
-  }
-};
 
 exports.login = async (req, res) => {
   try {
@@ -145,6 +110,7 @@ exports.forgotPassword = async (req, res) => {
     });
 
     res.status(200).json({
+      success: true,
       message: "Reset link sent to your email",
     });
   } catch (err) {
@@ -186,6 +152,79 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+exports.sendOtp = async (req, res) => {
+  try {
+    const { email, name, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists.", data: null });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = Math.floor(100000 + Math.random() * 900000);
+
+    await Otp.create({ name, email, otp, password: hashedPassword });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: process.env.EMAIL, pass: process.env.PASSWORD_APP_EMAIL },
+    });
+
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: email,
+      subject: "User Registration in Loan_Lens",
+      html: `<h2>OTP for user registration</h2><p>Your OTP is: <b>${otp}</b></p>`,
+    });
+
+    res.status(200).json({ success: true, message: "OTP sent to your email" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message, data: null });
+  }
+};
+
+exports.verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const stored = await Otp.findOne({ email });
+
+    if (!stored) {
+      return res
+        .status(400)
+        .json({ success: false, message: "OTP not found", data: null });
+    }
+
+    if (stored.otp !== Number(otp)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect OTP", data: null });
+    }
+
+    const user = await User.create({
+      name: stored.name,
+      email,
+      password: stored.password,
+      role: "applicant",
+    });
+
+    await Otp.deleteOne({ email });
+
+    res.status(200).json({
+      success: true,
+      message: "User registered successfully",
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message, data: null });
+  }
+};
 
 exports.getAdminDashboard = async (req, res) => {
   try {
