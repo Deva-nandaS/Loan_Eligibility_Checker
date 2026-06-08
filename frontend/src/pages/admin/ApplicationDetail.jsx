@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { Sidebar } from "../../Components/Sidebar";
 import { getApplicationById, updateOverride } from "../../api/admindashboard";
 import { Button } from "../../Components/ui/Button";
 import { getApprovedFields, getRejectedFields } from "../../constants";
-import { toast } from "react-toastify";
+
 
 const Card = ({ label, value }) => {
   const isTwo = label === "Reasons" || label === "Suggestions";
@@ -44,7 +45,7 @@ export const ApplicationDetail = () => {
   }, [id, navigate]);
 
   const handleOverride = () => {
-     if (showDetails.emptype === "Unemployed") return;
+    if (showDetails.emptype === "Unemployed") return;
     setShowOverride(true);
   };
   const handleConfirm = async () => {
@@ -104,16 +105,12 @@ export const ApplicationDetail = () => {
   const fields = showDetails.eligible
     ? getApprovedFields(showDetails)
     : getRejectedFields(showDetails);
-
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex ml-48 items-center justify-center p-6">
-        <div
-          className={`bg-white fixed rounded-xl shadow-2xl p-8 w-[500px] max-w-lg border border-teal-800
-           `}
-        >
-          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 -mx-8 px-8">
+      <div className="flex-1 ml-16 md:ml-48 flex items-center justify-center p-4 md:p-6">
+        <div className="bg-white rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-lg border border-teal-800 ">
+          <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
             {fields.map(({ label, value }) => (
               <Card key={label} label={label} value={value} />
             ))}
@@ -128,37 +125,33 @@ export const ApplicationDetail = () => {
             <div className="relative group flex-1">
               <Button
                 className={`w-full text-white rounded-lg font-bold py-2 
-        ${
-          showDetails.emptype === "Unemployed"
-            ? "bg-gray-400 cursor-not-allowed opacity-50"
-            : "bg-teal-800 hover:bg-gray-800"
-        }`}
+                  ${
+                    showDetails.emptype === "Unemployed"
+                      ? "bg-gray-400 cursor-not-allowed opacity-50"
+                      : "bg-teal-800 hover:bg-gray-800"
+                  }`}
                 onClick={handleOverride}
                 disabled={showDetails.emptype === "Unemployed"}
               >
                 Override
               </Button>
               {showDetails.emptype === "Unemployed" && (
-                <div
-                  className="absolute bottom-10 left-0 hidden group-hover:block
-          bg-gray-800 text-white text-xs rounded p-2 w-48 z-10"
-                >
+                <div className="absolute bottom-10 left-0 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-48 z-10">
                   Cannot override — applicant is Unemployed
                 </div>
               )}
-            </div>{" "}
-       
+            </div>
             <Button
               className="flex-1 bg-teal-800 text-white rounded-lg font-bold py-2 hover:bg-gray-800"
               onClick={() => navigate("/admin/", { replace: true })}
             >
               Done
             </Button>
-          </div>{" "}
-      
+          </div>
+
           {showOverride && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="border-2 border-teal-700 bg-white shadow-2xl w-[450px] rounded-xl">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+              <div className="border-2 border-teal-700 bg-white shadow-2xl w-full max-w-md rounded-xl">
                 <div className="flex flex-col p-6 gap-5">
                   <h2 className="font-bold text-lg border-b pb-2">
                     Status Updation
@@ -169,7 +162,7 @@ export const ApplicationDetail = () => {
                       type="text"
                       value={reason}
                       placeholder="Enter reason"
-                      className="border p-2 rounded "
+                      className="border p-2 rounded"
                       onChange={(e) => setReason(e.target.value)}
                     />
                   </div>

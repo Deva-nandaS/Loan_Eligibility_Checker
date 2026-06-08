@@ -4,93 +4,101 @@ import { GrFormAdd } from "react-icons/gr";
 import { MdHistory } from "react-icons/md";
 import { CiViewList } from "react-icons/ci";
 import { SiVictoriametrics } from "react-icons/si";
-import { AiOutlineMenu } from "react-icons/ai";
-import { RiArrowLeftSLine } from "react-icons/ri";
+import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/slices/authSlice";
+import { toggleSidebar } from "../redux/slices/sidebarSlice";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
-  
-  const [showLogout, setShowLogout] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const dispatch = useDispatch();
+  const { user, role } = useSelector((state) => state.auth);
+  const { collapsed } = useSelector((state) => state.sidebar);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+
+  const [showLogout, setShowLogout] = useState(false);
+
+  const handleToggleSidebar = () => dispatch(toggleSidebar());
+  const wrapperClass = "flex items-center gap-2";
+  const IconClass = "text-gray-400 ml-3";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    dispatch(logout());
     navigate("/", { replace: true });
   };
 
   const navClass = ({ isActive }) =>
-    `flex p-8 text-xl font-medium cursor-pointer
-    ${
-      isActive ? "bg-teal-800 text-white" : "hover:bg-gray-100 hover:text-white"
-    }`;
+    `flex p-3 font-medium cursor-pointer
+    ${isActive ? "bg-teal-800 text-white" : "hover:bg-gray-100 hover:text-white"}`;
 
   return (
     <div
-      className={`${collapsed ? "w-20" : "w-48"} fixed left-0 top-0 border-r h-screen shadow-2xl flex flex-col justify-between bg-white transition-all duration-300 `}
+      className={`${collapsed ? "w-20" : "w-32"} fixed left-0 top-0 border-r h-screen shadow-2xl flex flex-col justify-between bg-white transition-all duration-300`}
     >
       {/* Top section */}
       <div>
         <div
           className="flex p-4 justify-center items-center"
-          onClick={() =>
-            navigate(user?.role === "admin" ? "/admin/" : "/applicant/")
-          }
+          onClick={() => navigate("/admin")}
         >
-          {!collapsed && <img src="/Loan_lens_logo.png" alt="logo" className="w-56 cursor-pointer"></img>}
+          {!collapsed && (
+            <img
+              src="/Loan_lens_logo.png"
+              alt="logo"
+              className="w-56 cursor-pointer"
+            />
+          )}
         </div>
+
         {/* Toggle button */}
         <div
           className={`p-3 flex ${collapsed ? "justify-center" : "justify-end"}`}
         >
           {collapsed ? (
             <AiOutlineMenu
-              size={25}
-              className="cursor-pointer text-gray-400"
-              onClick={() => setCollapsed(!collapsed)}
+              size={20}
+              className="cursor-pointer text-gray-400 mt-3"
+              onClick={handleToggleSidebar}
             />
           ) : (
-            <RiArrowLeftSLine
-              size={25}
-              className="cursor-pointer"
-              onClick={() => setCollapsed(!collapsed)}
+            <AiOutlineClose
+              size={20}
+              className="cursor-pointer text-gray-400"
+              onClick={handleToggleSidebar}
             />
           )}
         </div>
 
-        {user.role === "applicant" ? (
-          <div>
-            {/* new */}
+        {role === "applicant" ? (
+          <div className="flex gap-5 flex-col">
             <NavLink to="/applicant/apply" className={navClass}>
-              <div className="flex items-center gap-2">
-                <GrFormAdd size={25} className="text-gray-400" />
+              <div className={wrapperClass}>
+                <GrFormAdd size={20} className={IconClass} />
                 {!collapsed && <p>New</p>}
               </div>
             </NavLink>
 
-            {/* history */}
             <NavLink to="/applicant/history" className={navClass}>
-              <div className="flex items-center gap-2">
-                <MdHistory size={25} className="text-gray-400" />
+              <div className={wrapperClass}>
+                <MdHistory size={18} className={IconClass} />
                 {!collapsed && <p>History</p>}
               </div>
             </NavLink>
           </div>
         ) : (
-          <div>
+          <div className="flex gap-5 flex-col">
             <NavLink to="/admin/applications" className={navClass}>
-              <div className="flex items-center gap-2">
-                <CiViewList size={25} className="text-gray-400" />
+              <div className={wrapperClass}>
+                <CiViewList size={20} className={IconClass} />
                 {!collapsed && <p>View</p>}
               </div>
             </NavLink>
 
-            {/* metrics */}
             <NavLink to="/admin/metrics" className={navClass}>
-              <div className="flex items-center gap-2">
-                <SiVictoriametrics size={20} className="text-gray-400" />
+              <div className={wrapperClass}>
+                <SiVictoriametrics size={18} className={IconClass} />
                 {!collapsed && <p>Metrics</p>}
               </div>
             </NavLink>

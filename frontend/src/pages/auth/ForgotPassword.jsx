@@ -30,7 +30,7 @@ export const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
+      <div className="md:w-full max-w-4xl sm:w-[500px] flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
         <div className="w-full md:w-1/2 flex  border border-r-gray items-start p-6 ">
           <form
             onSubmit={handleSubmit}

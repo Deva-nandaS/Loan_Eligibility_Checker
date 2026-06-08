@@ -52,18 +52,17 @@ export const Result = () => {
     { label: "Risk Category", value: result.riskCategory },
     { label: "Debt Ratio", value: result.debtRatio },
   ];
-  return (
+ return (
     <div className="flex h-screen">
       <Sidebar />
-      <div className="flex-1 flex  ml-48 justify-center items-center p-6">
+      <div className="flex-1 flex ml-16 md:ml-48 justify-center items-center p-4 md:p-6">
         <div
-          className={`bg-white fixed  rounded-xl shadow-2xl p-8 w-full max-w-lg border
+          className={`bg-white rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-lg border
           ${result.eligible ? "border-green-500" : "border-red-500"}`}
         >
           {result.eligible ? (
             <div className="space-y-3">
               <h4 className="text-2xl text-green-700 font-bold text-center mb-6">
-                {" "}
                 APPROVED
               </h4>
               {success.map(({ label, value }) => (
@@ -73,18 +72,14 @@ export const Result = () => {
           ) : (
             <div className="space-y-3">
               <h4 className="text-2xl text-red-700 font-bold text-center mb-6">
-                {" "}
                 REJECTED
               </h4>
               <Card label="Reason" value={result.reasons?.[0]} />
               <Card label="Reapply after" value="90 days" />
-
               <div className="mt-2">
                 <p className="font-semibold text-gray-600 mb-2">Suggestions</p>
                 {result.suggestions?.map((s, i) => (
-                  <p key={i} className="text-sm text-gray-600">
-                    - {s}
-                  </p>
+                  <p key={i} className="text-sm text-gray-600">- {s}</p>
                 ))}
               </div>
             </div>
@@ -93,17 +88,15 @@ export const Result = () => {
           <div className="flex gap-4 mt-8">
             <Button
               className="flex-1 bg-teal-800 border text-white rounded-lg font-semibold py-2"
-              onClick={() =>
-                navigate("/applicant/apply", {
-                  state: { name: result.name, age: result.age },
-                  replace: true,
-                })
-              }
+              onClick={() => navigate("/applicant/apply", {
+                state: { name: result.name, age: result.age },
+                replace: true,
+              })}
             >
               Apply Again
             </Button>
             <Button
-              className="flex-1 bg-teal-800 text-white rounded-lg font-semibold py-2 "
+              className="flex-1 bg-teal-800 text-white rounded-lg font-semibold py-2"
               onClick={() => navigate("/applicant/", { replace: true })}
             >
               Done

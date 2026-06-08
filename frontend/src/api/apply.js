@@ -1,4 +1,4 @@
-import axiosInstance from "./api";
+import axiosInstance from "./axiosInstance";
 
 export const createLoan = async (data) => {
   const res = await axiosInstance.post("loan/apply", data);

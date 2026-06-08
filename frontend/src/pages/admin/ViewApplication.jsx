@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { Sidebar } from "../../Components/Sidebar";
 import { getApplication } from "../../api/admindashboard";
 import { Button } from "../../Components/ui/Button";
 
 export const ViewApplication = () => {
+  const { collapsed } = useSelector((state) => state.sidebar);
   const navigate = useNavigate();
-
   const [views, setViews] = useState([]);
   const [page, setPage] = useState(5);
   const [search, setSearch] = useState("");
@@ -29,29 +30,32 @@ export const ViewApplication = () => {
   return (
     <div className="flex overflow-hidden h-screen">
       <Sidebar />
-      {/* body */}
-      <div className="flex-1 ml-56 pl-12 p-6 overflow-auto">
-        <h2 className="font-bold text-2xl mb-6">Loan Applications</h2>
-        {/* search bar */}
+      <div
+        className={`flex-1 transition-all duration-300 mt-5 p-4 md:p-6 overflow-y-auto ${collapsed ? "ml-24" : "ml-32"}`}
+      >
+        <h2 className="font-bold text-xl md:text-2xl mb-6">
+          Loan Applications
+        </h2>
 
-        <div className="border w-3/4 h-14 mb-5 mt-3 rounded-md border-gray-300 cursor-auto">
-          <div className="p-3 ">
+        <div className="border w-full md:w-3/4 h-12 md:h-14 mb-5 mt-3 rounded-md border-gray-300">
+          <div className="p-3">
             <input
               type="text"
               value={search}
               placeholder="Search....."
-              className="outline-none"
+              className="outline-none w-full"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
+
         <p className="mt-6 mb-3 text-lg text-slate-700">
           {views.length} applications
         </p>
 
-        <div className=" border rounded overflow-hidden bg-white">
-          <div>
-            <table className="view-table min-w-full w-full text-left text-sm ">
+        <div className="border rounded overflow-hidden bg-white">
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="view-table min-w-[600px] w-full text-left text-sm">
               <thead className="bg-gray-50 text-gray-600 uppercase">
                 <tr>
                   {["Name", "Amount", "Status", "Actions"].map((a) => (
@@ -70,10 +74,9 @@ export const ViewApplication = () => {
                       <td>{item.name}</td>
                       <td>{item.amount}</td>
                       <td>{item.eligible ? "Approved" : "Rejected"}</td>
-
-                      <td>
+                      <td className="flex items-center justify-center">
                         <Button
-                          className="text-white bg-teal-800 px-6 py-2 rounded-lg mr-5"
+                          className="text-white bg-teal-800 px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm"
                           onClick={() =>
                             navigate(`/admin/applications/${item._id}`, {
                               replace: true,
@@ -87,20 +90,18 @@ export const ViewApplication = () => {
                   ))
                 )}
               </tbody>
-
               <tfoot>
                 <tr>
                   <td colSpan="8">
-                    <div className="flex gap-2">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                       <p>
-                        Showing 1 to {Math.min(views.length, page)} of{" "}
-                        {views.length} result{" "}
-                        {views.length !== 1 ? "s" : ""}{" "}
+                        Showing to {Math.min(views.length, page)} of{" "}
+                        {views.length} result{views.length !== 1 ? "s" : ""}
                       </p>
-                      <div className="flex gap-3">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <p>Show:</p>
                         <select
-                          className="border rounded-md border-gray-500 "
+                          className="border rounded-md border-gray-500"
                           value={page}
                           onChange={(e) => setPage(Number(e.target.value))}
                         >

@@ -1,61 +1,49 @@
 import React, { useState } from "react";
 import { Link, useNavigate, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PiSpinnerGap } from "react-icons/pi";
 
-import { loginUser } from "../../api/auth";
+import { loginUserThunk } from "../../redux/slices/authSlice";
 
 export const Login = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { loading } = useSelector((state) => state.auth);
 
-  const token = localStorage.getItem("token");
-  if (token) {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user?.role === "admin") {
-      return <Navigate to="/admin/" replace />;
-    } else {
-      return <Navigate to="/applicant/" replace />;
-    }
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  if (isAuthenticated) {
+    return (
+      <Navigate to={user?.role === "admin" ? "/admin/" : "/applicant/"} replace />
+    );
   }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    if (!email) {
-      toast.error("Email is required");
-      return;
-    }
+  if (!email) return toast.error("Email is required");
+  if (!password) return toast.error("Password is required");
 
-    if (!password) {
-      toast.error("Password is required");
-      return;
-    }
-    setLoading(true);
-    try {
-      const data = await loginUser(email, password);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      localStorage.setItem("token", data.data.token);
-      localStorage.setItem("user", JSON.stringify(data.data.user));
-      const user = data.data.user;
+  try {
+    const result = await dispatch(
+      loginUserThunk({ email, password })
+    );
 
-      if (user.role === "admin") {
-        navigate("/admin/", { replace: true });
-      } else {
-        navigate("/applicant/", { replace: true });
-      }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Login failed");
-      setLoading(false);
+    if (loginUserThunk.fulfilled.match(result)) {
+      navigate(
+        result.payload.user.role === "admin"
+          ? "/admin/"
+          : "/applicant/",
+        { replace: true }
+      );
+    } else {
+      toast.error(result.error.message || "Login failed");
     }
-    finally{
-      setLoading(false);
-    }
-  };
-
+  } catch (err) {
+    toast.error("Something went wrong");
+  }
+};
   if (loading)
     return (
       <div className="flex gap-2 items-center h-screen justify-center">
@@ -66,7 +54,7 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
+      <div className="md:w-full sm:w-[500px] max-w-4xl  flex bg-white rounded-lg shadow-lg overflow-hidden min-h-[550px]">
         {/* LEFT FORM */}
 
         <div className="w-full md:w-1/2 flex justify-center border-r-gray border items-center p-10 min-h-[500px]">

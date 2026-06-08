@@ -13,10 +13,12 @@ import {
   EMPLOYMENT_TYPES,
   LOAN_PURPOSES,
 } from "../../constants";
+import { useSelector } from "react-redux";
 
 export const Apply = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const {collapsed}=useSelector((state)=>state.sidebar)
 
   const [name, setName] = useState(location.state?.name || "");
   const [age, setAge] = useState(location.state?.age || "");
@@ -145,20 +147,19 @@ export const Apply = () => {
     </div>
   );
 
-  return (
-    <div className="flex h-screen overflow-hidden">
+ return (
+    <div className="flex min-h-screen overflow-hidden">
       <Sidebar />
 
-      <div className="flex-1 ml-56 bg-white overflow-y-auto py-8 px-4">
+      <div className={`flex-1 transition-all duration-300  bg-white overflow-y-auto py-8 px-4 md:p-6  ${collapsed? "ml-24": "ml-32"}`}>
         <div className="max-w-2xl mx-auto">
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col fixed rounded-xl  border-teal-800 border shadow-2xl p-6 sm:p-8 w-full max-w-2xl bg-white"
+            className="flex flex-col rounded-xl border-teal-800 border shadow-2xl p-6 sm:p-8 w-full bg-white"
           >
-            <div className="w-full ">
-              <div className="flex border-b-teal-800  border-b items-center justify-center ">
-                {" "}
-                <h4 className=" text-black text-3xl mb-5sm:text-3xl mb-4 font-semibold  text-center">
+            <div className="w-full">
+              <div className="flex border-b-teal-800 border-b items-center justify-center">
+                <h4 className="text-black text-2xl sm:text-3xl mb-4 font-semibold text-center">
                   Loan Application Form
                 </h4>
               </div>
@@ -166,7 +167,6 @@ export const Apply = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-7">
                 <div>
                   <label className="font-bold mb-1 block">Name</label>
-
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="text"
@@ -175,9 +175,7 @@ export const Apply = () => {
                     onChange={handleChange(setName, "name", "Name is required")}
                     required
                   />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-                  )}
+                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                 </div>
 
                 <div>
@@ -190,12 +188,9 @@ export const Apply = () => {
                     onChange={handleChange(setAge, "age", "Age is required")}
                     required
                   />
-                  {errors.age && (
-                    <p className="text-red-500 text-xs mt-1">{errors.age}</p>
-                  )}
+                  {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
                 </div>
 
-                {/* Monthlyincome */}
                 <div>
                   <label className="font-bold mb-1 block">Monthly Income</label>
                   <Input
@@ -203,91 +198,54 @@ export const Apply = () => {
                     type="number"
                     placeholder="eg:20,000"
                     value={income}
-                    onChange={handleChange(
-                      setIncome,
-                      "income",
-                      "Monthly income is required",
-                    )}
+                    onChange={handleChange(setIncome, "income", "Monthly income is required")}
                     required
                   />
-                  {errors.income && (
-                    <p className="text-red-500 text-xs mt-1">{errors.income}</p>
-                  )}
+                  {errors.income && <p className="text-red-500 text-xs mt-1">{errors.income}</p>}
                 </div>
 
-                {/* loanamount */}
                 <div>
-                  <div className=" flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5">
                     <label className="font-bold mb-1 block">Loan amount</label>
-                    <Tooltip
-                      field="loanamount"
-                      message="Amount cannot exceed 40% of income"
-                    />
+                    <Tooltip field="loanamount" message="Amount cannot exceed 40% of income" />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:50,000"
                     value={amount}
-                    onChange={handleChange(
-                      setAmount,
-                      "amount",
-                      "Amount is required",
-                    )}
+                    onChange={handleChange(setAmount, "amount", "Amount is required")}
                     required
                   />
-                  {errors.amount && (
-                    <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
-                  )}
+                  {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
                 </div>
 
-                {/* loantenure */}
                 <div>
-                  <div className=" flex items-center gap-1.5">
-                    <label className="font-bold mb-1 block">
-                      Loan tenure(in months)
-                    </label>
-
-                    <Tooltip
-                      field="loanTenure"
-                      message="Enter how many months to repay the loan."
-                    />
+                  <div className="flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">Loan tenure(in months)</label>
+                    <Tooltip field="loanTenure" message="Enter how many months to repay the loan." />
                   </div>
-
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg: 12"
                     value={loanTenure}
-                    onChange={handleChange(
-                      setloanTenure,
-                      "loanTenure",
-                      "Loan tenure is required",
-                    )}
+                    onChange={handleChange(setloanTenure, "loanTenure", "Loan tenure is required")}
                     required
                   />
                 </div>
-                {/* credit */}
+
                 <div>
-                  <div className="relative flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5">
                     <label className="font-bold mb-1 block">Credit Score</label>
-
-                    <Tooltip
-                      field="credit"
-                      message="Minimum credit score should be 650."
-                    />
+                    <Tooltip field="credit" message="Minimum credit score should be 650." />
                   </div>
-
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:700"
                     value={credit}
-                    onChange={handleChange(
-                      setCredit,
-                      "credit",
-                      "Credit score is required",
-                    )}
+                    onChange={handleChange(setCredit, "credit", "Credit score is required")}
                     required
                   />
                 </div>
@@ -305,7 +263,6 @@ export const Apply = () => {
                   </select>
                 </div>
 
-                {/* debt */}
                 <div>
                   <label className="font-bold mb-1 block">Existing Debt</label>
                   <Input
@@ -313,23 +270,14 @@ export const Apply = () => {
                     type="number"
                     placeholder="eg:10,000"
                     value={debt}
-                    onChange={handleChange(
-                      setDebt,
-                      "debt",
-                      "Debt field is required",
-                    )}
+                    onChange={handleChange(setDebt, "debt", "Debt field is required")}
                     required
                   />
-                  {errors.debt && (
-                    <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
-                  )}
+                  {errors.debt && <p className="text-red-500 text-xs mt-1">{errors.debt}</p>}
                 </div>
 
-                {/* employmentType */}
                 <div>
-                  <label className="font-bold mb-1 block">
-                    Employment Type
-                  </label>
+                  <label className="font-bold mb-1 block">Employment Type</label>
                   <select
                     className="border-2 rounded-lg w-full p-2"
                     value={emptype}
@@ -341,49 +289,33 @@ export const Apply = () => {
                   </select>
                 </div>
 
-                {/* experience */}
                 <div>
-                  <div className=" relative flex items-center gap-1.5">
-                    <label className="font-bold mb-1 block">
-                      {" "}
-                      Years of Experience
-                    </label>
-
-                    <Tooltip
-                      field="experience"
-                      message="How many years of experience in your current job"
-                    />
+                  <div className="flex items-center gap-1.5">
+                    <label className="font-bold mb-1 block">Years of Experience</label>
+                    <Tooltip field="experience" message="How many years of experience in your current job" />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:2"
                     value={tenure}
-                    onChange={handleChange(
-                      setTenure,
-                      "tenure",
-                      "Job Tenure field is required",
-                    )}
+                    onChange={handleChange(setTenure, "tenure", "Job Tenure field is required")}
                     required
                   />
-                  {errors.tenure && (
-                    <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>
-                  )}
+                  {errors.tenure && <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>}
                 </div>
 
-                <div className="col-span-2  flex items-center justify-center w-fu;;">
+                <div className="col-span-1 sm:col-span-2 flex items-center justify-center">
                   <Button
                     disabled={loading || !isFormValid}
                     type="submit"
-                    className={` mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      loading || !isFormValid
-                        ? "bg-gray-400"
-                        : "bg-teal-900 cursor-pointer"
+                    className={`mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      loading || !isFormValid ? "bg-gray-400" : "bg-teal-900 cursor-pointer"
                     }`}
                   >
                     {loading ? (
-                      <div className="flex items-center justify-center">
-                        <PiSpinnerGap size={34} className="animate-spin" />
+                      <div className="flex items-center justify-center gap-2">
+                        <PiSpinnerGap size={24} className="animate-spin" />
                         Submitting...
                       </div>
                     ) : (

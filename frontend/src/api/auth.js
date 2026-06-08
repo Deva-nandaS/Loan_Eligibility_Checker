@@ -1,4 +1,4 @@
-import axiosInstance from "./api";
+import axiosInstance from "./axiosInstance";
 
 export const sendOtp = async (name,email,password,role) => {
   const response = await axiosInstance.post(`/auth/sendotp`, { name,email,password,role });

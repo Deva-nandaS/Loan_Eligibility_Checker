@@ -35,7 +35,7 @@ export const Register = () => {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="w-full max-w-4xl flex bg-white rounded-lg shadow-2xl overflow-hidden min-h-[550px] ">
+      <div className="md:w-full max-w-4xl sm:w-[500px] flex bg-white rounded-lg shadow-2xl overflow-hidden min-h-[550px] ">
         <div className="w-full md:w-1/2 flex justify-center items-center border-r-gray border p-6">
           <form
             onSubmit={handleSubmit}
