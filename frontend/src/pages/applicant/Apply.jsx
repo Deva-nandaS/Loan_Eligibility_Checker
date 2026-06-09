@@ -7,18 +7,20 @@ import { PiSpinnerGap } from "react-icons/pi";
 import { Input } from "../../Components/ui/Input";
 import { Button } from "../../Components/ui/Button";
 import { Sidebar } from "../../Components/Sidebar";
-import { createLoan } from "../../api/apply";
 import {
   ELIGIBILITY_THRESHOLDS,
   EMPLOYMENT_TYPES,
   LOAN_PURPOSES,
 } from "../../constants";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { applyLoanthunk } from "../../redux/slices/loanSlice";
 
 export const Apply = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const {collapsed}=useSelector((state)=>state.sidebar)
+  const dispatch = useDispatch();
+  const { collapsed } = useSelector((state) => state.sidebar);
+  const { loading, error } = useSelector((state) => state.loan);
 
   const [name, setName] = useState(location.state?.name || "");
   const [age, setAge] = useState(location.state?.age || "");
@@ -31,7 +33,6 @@ export const Apply = () => {
   const [amount, setAmount] = useState("");
   const [errors, setErrors] = useState({});
   const [debt, setDebt] = useState("");
-  const [loading, setLoading] = useState(false);
   const [activeField, setActiveField] = useState(null);
 
   const validate = () => {
@@ -64,8 +65,15 @@ export const Apply = () => {
       errors.tenure = "Minimum 1 year tenure required";
     }
 
+    if (!debt) {
+      errors.debt = "Debt is required";
+    }
     if (!loanTenure) {
       errors.loanTenure = "Loan tenure is required";
+    } else if (Number(loanTenure) < 6) {
+      errors.loanTenure = "Minimum tenure is 6 months";
+    } else if (Number(loanTenure) > 360) {
+      errors.loanTenure = "Maximum tenure is 360 months";
     }
 
     if (!amount) {
@@ -90,30 +98,29 @@ export const Apply = () => {
       toast.error("Please fix the errors before submitting");
       return;
     }
-
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     try {
-      setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const res = await createLoan({
-        name,
-        age,
-        amount,
-        emptype,
-        income,
-        debt,
-        credit,
-        tenure,
-        loanTenure,
-        purpose,
-      });
+      const result = await dispatch(
+        applyLoanthunk({
+          name,
+          age,
+          amount,
+          emptype,
+          income,
+          debt,
+          credit,
+          tenure,
+          loanTenure,
+          purpose,
+        }),
+      ).unwrap();
+      console.log(result);
+      console.log(result.payload);
+
       toast.success("Submitted");
-      navigate(`/applicant/result/${res.loanId}`, { replace: true });
+      navigate(`/applicant/result/${result.payload.loanId}`, { replace: true });
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Submission failed");
-      const errdata = err?.response?.data;
-      navigate(`/applicant/result/${errdata.loanId}`, { replace: true });
-    } finally {
-      setLoading(false);
+      toast.error(error);
     }
   };
 
@@ -123,6 +130,7 @@ export const Apply = () => {
     Number(age) >= ELIGIBILITY_THRESHOLDS.MIN_AGE &&
     Number(age) <= ELIGIBILITY_THRESHOLDS.MAX_AGE &&
     !!income &&
+    !!debt &&
     !!credit &&
     Number(credit) >= ELIGIBILITY_THRESHOLDS.MIN_CREDIT_SCORE &&
     !!tenure &&
@@ -130,6 +138,22 @@ export const Apply = () => {
       Number(tenure) >= ELIGIBILITY_THRESHOLDS.MIN_JOB_TENURE_YEARS) &&
     !!loanTenure &&
     !!amount;
+
+  console.log({
+    name: !!name,
+    age: !!age,
+    minAge: Number(age) >= ELIGIBILITY_THRESHOLDS.MIN_AGE,
+    maxAge: Number(age) <= ELIGIBILITY_THRESHOLDS.MAX_AGE,
+    income: !!income,
+    credit: !!credit,
+    creditScore: Number(credit) >= ELIGIBILITY_THRESHOLDS.MIN_CREDIT_SCORE,
+    tenure: !!tenure,
+    tenureCheck:
+      emptype !== "Salaried" ||
+      Number(tenure) >= ELIGIBILITY_THRESHOLDS.MIN_JOB_TENURE_YEARS,
+    loanTenure: !!loanTenure,
+    amount: !!amount,
+  });
 
   const Tooltip = ({ field, message }) => (
     <div className="relative flex items-center gap-1.5">
@@ -147,11 +171,15 @@ export const Apply = () => {
     </div>
   );
 
- return (
+  console.log("loading:", loading);
+  console.log("isFormValid:", isFormValid);
+  return (
     <div className="flex min-h-screen overflow-hidden">
       <Sidebar />
 
-      <div className={`flex-1 transition-all duration-300  bg-white overflow-y-auto py-8 px-4 md:p-6  ${collapsed? "ml-24": "ml-32"}`}>
+      <div
+        className={`flex-1 transition-all duration-300  bg-white overflow-y-auto py-8 px-4 md:p-6  ${collapsed ? "ml-24" : "ml-32"}`}
+      >
         <div className="max-w-2xl mx-auto">
           <form
             onSubmit={handleSubmit}
@@ -175,7 +203,9 @@ export const Apply = () => {
                     onChange={handleChange(setName, "name", "Name is required")}
                     required
                   />
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                  )}
                 </div>
 
                 <div>
@@ -188,7 +218,9 @@ export const Apply = () => {
                     onChange={handleChange(setAge, "age", "Age is required")}
                     required
                   />
-                  {errors.age && <p className="text-red-500 text-xs mt-1">{errors.age}</p>}
+                  {errors.age && (
+                    <p className="text-red-500 text-xs mt-1">{errors.age}</p>
+                  )}
                 </div>
 
                 <div>
@@ -198,39 +230,63 @@ export const Apply = () => {
                     type="number"
                     placeholder="eg:20,000"
                     value={income}
-                    onChange={handleChange(setIncome, "income", "Monthly income is required")}
+                    onChange={handleChange(
+                      setIncome,
+                      "income",
+                      "Monthly income is required",
+                    )}
                     required
                   />
-                  {errors.income && <p className="text-red-500 text-xs mt-1">{errors.income}</p>}
+                  {errors.income && (
+                    <p className="text-red-500 text-xs mt-1">{errors.income}</p>
+                  )}
                 </div>
 
                 <div>
                   <div className="flex items-center gap-1.5">
                     <label className="font-bold mb-1 block">Loan amount</label>
-                    <Tooltip field="loanamount" message="Amount cannot exceed 40% of income" />
+                    <Tooltip
+                      field="loanamount"
+                      message="Amount cannot exceed 40% of income"
+                    />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:50,000"
                     value={amount}
-                    onChange={handleChange(setAmount, "amount", "Amount is required")}
+                    onChange={handleChange(
+                      setAmount,
+                      "amount",
+                      "Amount is required",
+                    )}
                     required
                   />
-                  {errors.amount && <p className="text-red-500 text-xs mt-1">{errors.amount}</p>}
+                  {errors.amount && (
+                    <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
+                  )}
                 </div>
 
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <label className="font-bold mb-1 block">Loan tenure(in months)</label>
-                    <Tooltip field="loanTenure" message="Enter how many months to repay the loan." />
+                    <label className="font-bold mb-1 block">
+                      Loan tenure(in months)
+                    </label>
+                    <Tooltip
+                      field="loanTenure"
+                      message="Enter how many months to repay the loan."
+                    />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg: 12"
                     value={loanTenure}
-                    onChange={handleChange(setloanTenure, "loanTenure", "Loan tenure is required")}
+                    onChange={handleChange(
+                      setloanTenure,
+                      "loanTenure",
+                      "Loan tenure is required",
+                    )}
                     required
                   />
                 </div>
@@ -238,14 +294,21 @@ export const Apply = () => {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <label className="font-bold mb-1 block">Credit Score</label>
-                    <Tooltip field="credit" message="Minimum credit score should be 650." />
+                    <Tooltip
+                      field="credit"
+                      message="Minimum credit score should be 650."
+                    />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:700"
                     value={credit}
-                    onChange={handleChange(setCredit, "credit", "Credit score is required")}
+                    onChange={handleChange(
+                      setCredit,
+                      "credit",
+                      "Credit score is required",
+                    )}
                     required
                   />
                 </div>
@@ -270,14 +333,22 @@ export const Apply = () => {
                     type="number"
                     placeholder="eg:10,000"
                     value={debt}
-                    onChange={handleChange(setDebt, "debt", "Debt field is required")}
+                    onChange={handleChange(
+                      setDebt,
+                      "debt",
+                      "Debt field is required",
+                    )}
                     required
                   />
-                  {errors.debt && <p className="text-red-500 text-xs mt-1">{errors.debt}</p>}
+                  {errors.debt && (
+                    <p className="text-red-500 text-xs mt-1">{errors.debt}</p>
+                  )}
                 </div>
 
                 <div>
-                  <label className="font-bold mb-1 block">Employment Type</label>
+                  <label className="font-bold mb-1 block">
+                    Employment Type
+                  </label>
                   <select
                     className="border-2 rounded-lg w-full p-2"
                     value={emptype}
@@ -291,18 +362,29 @@ export const Apply = () => {
 
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <label className="font-bold mb-1 block">Years of Experience</label>
-                    <Tooltip field="experience" message="How many years of experience in your current job" />
+                    <label className="font-bold mb-1 block">
+                      Years of Experience
+                    </label>
+                    <Tooltip
+                      field="experience"
+                      message="How many years of experience in your current job"
+                    />
                   </div>
                   <Input
                     className="border-2 rounded-lg w-full p-2"
                     type="number"
                     placeholder="eg:2"
                     value={tenure}
-                    onChange={handleChange(setTenure, "tenure", "Job Tenure field is required")}
+                    onChange={handleChange(
+                      setTenure,
+                      "tenure",
+                      "Job Tenure field is required",
+                    )}
                     required
                   />
-                  {errors.tenure && <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>}
+                  {errors.tenure && (
+                    <p className="text-red-500 text-xs mt-1">{errors.tenure}</p>
+                  )}
                 </div>
 
                 <div className="col-span-1 sm:col-span-2 flex items-center justify-center">
@@ -310,7 +392,9 @@ export const Apply = () => {
                     disabled={loading || !isFormValid}
                     type="submit"
                     className={`mt-5 text-white font-bold rounded-md py-2 px-10 disabled:opacity-50 disabled:cursor-not-allowed ${
-                      loading || !isFormValid ? "bg-gray-400" : "bg-teal-900 cursor-pointer"
+                      loading || !isFormValid
+                        ? "bg-gray-400"
+                        : "bg-teal-900 cursor-pointer"
                     }`}
                   >
                     {loading ? (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PiSpinnerGap } from "react-icons/pi";
@@ -7,43 +7,31 @@ import { PiSpinnerGap } from "react-icons/pi";
 import { loginUserThunk } from "../../redux/slices/authSlice";
 
 export const Login = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { loading } = useSelector((state) => state.auth);
 
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { loading, isAuthenticated, user } = useSelector((state) => state.auth);
   if (isAuthenticated) {
     return (
-      <Navigate to={user?.role === "admin" ? "/admin/" : "/applicant/"} replace />
+      <Navigate
+        to={user?.role === "admin" ? "/admin/" : "/applicant/"}
+        replace
+      />
     );
   }
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!email) return toast.error("Email is required");
-  if (!password) return toast.error("Password is required");
+    if (!email) return toast.error("Email is required");
+    if (!password) return toast.error("Password is required");
 
-  try {
-    const result = await dispatch(
-      loginUserThunk({ email, password })
-    );
+    const result = await dispatch(loginUserThunk({ email, password }));
 
-    if (loginUserThunk.fulfilled.match(result)) {
-      navigate(
-        result.payload.user.role === "admin"
-          ? "/admin/"
-          : "/applicant/",
-        { replace: true }
-      );
-    } else {
-      toast.error(result.error.message || "Login failed");
+    if (!loginUserThunk.fulfilled.match(result)) {
+      toast.error(result.payload);
     }
-  } catch (err) {
-    toast.error("Something went wrong");
-  }
-};
+  };
   if (loading)
     return (
       <div className="flex gap-2 items-center h-screen justify-center">

@@ -8,9 +8,7 @@ const getLoanResult = async (req, res) => {
     const loan = await Loan.findById(req.params.id);
     if (!loan) {
       return res.status(404).json({ message: "Resource(loan) not found" });
-    } else {
-      return res.status(200).json(loan);
-    }
+    } 
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

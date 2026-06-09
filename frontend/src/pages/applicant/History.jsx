@@ -1,25 +1,24 @@
 import { useState, useEffect } from "react";
 import { PiSpinnerGap } from "react-icons/pi";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchLoanHistory } from "../../redux/slices/loanSlice";
 
 import { HISTORY_TABLE_HEADERS } from "../../constants";
 import { Sidebar } from "../../Components/Sidebar";
 
-
 export const History = ({ onClose }) => {
-    const dispatch = useDispatch();
-      const {data,loading}=useSelector((state)=>state.loan)
-        const {collapsed}=useSelector((state)=>state.sidebar)
+  const dispatch = useDispatch();
+  const { data, loading } = useSelector((state) => state.loan);
+  const { collapsed } = useSelector((state) => state.sidebar);
 
   const [page, setPage] = useState(5);
   const [search, setSearch] = useState("");
-  const history=data||[]
+  const history = data || [];
 
   useEffect(() => {
     dispatch(fetchLoanHistory());
-  }, []);
+  }, [dispatch]);
 
   const filteredHistory = history.filter((item) =>
     item?.amount?.toString().includes(search),
@@ -37,7 +36,9 @@ export const History = ({ onClose }) => {
     <div className="flex min-h-screen">
       <Sidebar />
 
-      <div className={`flex-1 p-4 transition-all md:p-6 ml-16 md:ml-56 overflow-y-auto ${collapsed?"ml-24":"ml-40"}`}>
+      <div
+        className={`flex-1 transition-all duration-300 p-4 md:p-6 overflow-y-auto ${collapsed ? "ml-20" : "ml-56"}`}
+      >
         <h2 className="text-2xl font-bold mb-4">Loan History</h2>
 
         <div className="border border-gray w-full md:w-3/4 h-14 rounded-md mt-3 mb-5 cursor-auto">
@@ -92,7 +93,7 @@ export const History = ({ onClose }) => {
                           : "N/A"}
                       </td>
                       <td>
-                        {item.loanTenure ? `${item.loanTenure} months` : "N/A"}
+                        {item.loanTenure &&item.eligible ? `${item.loanTenure} months` : "N/A"}
                       </td>
                       <td className="flex justify-between items-center">
                         <span

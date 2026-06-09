@@ -31,7 +31,7 @@ export const ViewApplication = () => {
     <div className="flex overflow-hidden h-screen">
       <Sidebar />
       <div
-        className={`flex-1 transition-all duration-300 mt-5 p-4 md:p-6 overflow-y-auto ${collapsed ? "ml-24" : "ml-32"}`}
+        className={`flex-1 transition-all duration-300 mt-5 p-4 md:p-6 overflow-y-auto ${collapsed ? "ml-24" : "ml-56"}`}
       >
         <h2 className="font-bold text-xl md:text-2xl mb-6">
           Loan Applications

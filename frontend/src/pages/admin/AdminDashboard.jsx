@@ -35,7 +35,7 @@ export const AdminDashboard = () => {
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
-     <div className={`flex-1 transition-all duration-300 mt-5 p-4 md:p-6 overflow-y-auto ${collapsed?"ml-24 mr-10": "ml-48"}`}>
+     <div className={`flex-1 transition-all duration-300 mt-5 p-4 md:p-6 overflow-y-auto ${collapsed?"ml-24 mr-10": "ml-56"}`}>
         <div className="flex items-center justify-center">
           <h2 className="text-2xl font-bold mb-6">Welcome !</h2>
         </div>
