@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { PiSpinnerGap } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
 
-import { sendOtp } from "../../api/auth";
+import { sendOtpThunk } from "../../redux/slices/authSlice";
+
 
 export const Register = () => {
   const navigate=useNavigate();
+  const dispatch=useDispatch();
+  const {loading}=useSelector((state)=>state.auth)
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,7 +29,7 @@ export const Register = () => {
       return;
     }
     try {
-      await sendOtp(name,email,password);
+      await dispatch(sendOtpThunk({name,email,password,role:"applicant"})).unwrap();
       toast.success("OTP sent successfully");
       navigate("/verify-otp",{state:{name,email,password,role:"applicant"}})
 
@@ -32,6 +37,15 @@ export const Register = () => {
       toast.error(err.response?.data?.message||"Registration failed");
     }
   };
+
+  
+    if (loading)
+      return (
+        <div className="flex gap-2 h-screen items-center justify-center">
+          <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
+          <span className="font-bold text-3xl text-teal-900">Loading....</span>
+        </div>
+      );
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">

@@ -58,9 +58,9 @@ export const History = ({ onClose }) => {
         </p>
 
         <div className="border rounded overflow-hidden bg-white">
-          <div className="overflow-x-auto">
+          <div className="max-h-[500px] overflow-y-auto overflow-x-auto">
             <table className="history-table min-w-full w-full text-left border-collapse text-sm">
-              <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
+              <thead className="sticky top-0 bg-gray-50 text-gray-600 text-xs uppercase">
                 <tr>
                   {HISTORY_TABLE_HEADERS.map((h) => (
                     <th key={h}>{h}</th>

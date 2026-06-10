@@ -1,11 +1,15 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { PiSpinnerGap } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Sidebar } from "../../Components/Sidebar";
-import { getApplicationById, updateOverride } from "../../api/admindashboard";
+
 import { Button } from "../../Components/ui/Button";
 import { getApprovedFields, getRejectedFields } from "../../constants";
+import { getApplicationByIdThunk,updateOverrideThunk } from "../../redux/slices/adminSlice";
+
 
 
 const Card = ({ label, value }) => {
@@ -26,36 +30,44 @@ const Card = ({ label, value }) => {
 export const ApplicationDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const dispatch=useDispatch();
+  const {loading,error,message,applicationDetails}=useSelector((state)=>state.admin)
+  // const showDetails=applicationDetails||[]
+  const [showDetails,setShowDetails]=useState(false)
 
-  const [showDetails, setShowDetails] = useState(null);
   const [showOverride, setShowOverride] = useState(false);
   const [reason, setReason] = useState("");
   const [suggestions, setSuggestion] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getApplicationById(id);
-        setShowDetails(data);
-      } catch (err) {
-        navigate("/applicant/apply", { replace: true });
-      }
-    };
-    fetchData();
-  }, [id, navigate]);
+      dispatch( getApplicationByIdThunk(id));
+  }, [dispatch,id]);
+
+    useEffect(() => {
+     if(message){
+      toast.success(message)
+     }
+  }, [message]);
+
+  useEffect(() => {
+     if(error){
+      toast.error(error)
+     }
+  }, [error]);
+
 
   const handleOverride = () => {
     if (showDetails.emptype === "Unemployed") return;
     setShowOverride(true);
   };
   const handleConfirm = async () => {
-    try {
-      const response = await updateOverride(
+  
+      const response=dispatch(updateOverrideThunk(
         id,
         !showDetails.eligible,
         reason,
         suggestions,
-      );
+      ))
 
       if (response.eligible === true) {
         setShowDetails({
@@ -84,27 +96,24 @@ export const ApplicationDetail = () => {
       }
       setReason(" ");
       setSuggestion(" ");
-    } catch (err) {
-      if (err?.response?.status === 400) {
-        toast.error(err.response.data.message);
-      } else {
-        toast.error("something went wrong");
-      }
-    }
+  
 
     setShowOverride(false);
   };
 
-  if (!showDetails)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <span className="font-bold text-3xl text-teal-900">Loading...</span>
-      </div>
-    );
+    if (loading)
+      return (
+        <div className="flex gap-2 h-screen items-center justify-center">
+          <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
+          <span className="font-bold text-3xl text-teal-900">Loading....</span>
+        </div>
+      );
 
   const fields = showDetails.eligible
     ? getApprovedFields(showDetails)
     : getRejectedFields(showDetails);
+
+    
   return (
     <div className="flex h-screen">
       <Sidebar />

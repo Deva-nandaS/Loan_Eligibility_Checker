@@ -115,10 +115,8 @@ export const Apply = () => {
         }),
       ).unwrap();
       console.log(result);
-      console.log(result.payload);
-
       toast.success("Submitted");
-      navigate(`/applicant/result/${result.payload.loanId}`, { replace: true });
+      navigate(`/applicant/result/${result.loanId}`, { replace: true });
     } catch (err) {
       toast.error(error);
     }
@@ -178,7 +176,7 @@ export const Apply = () => {
       <Sidebar />
 
       <div
-        className={`flex-1 transition-all duration-300  bg-white overflow-y-auto py-8 px-4 md:p-6  ${collapsed ? "ml-24" : "ml-32"}`}
+        className={`flex-1 transition-all duration-300  bg-white overflow-y-auto py-8 px-4 md:p-6  ${collapsed ? "ml-24" : "ml-56"}`}
       >
         <div className="max-w-2xl mx-auto">
           <form

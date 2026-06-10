@@ -1,31 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { forgotPassword } from "../../api/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPasswordThunk } from "../../redux/slices/authSlice";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const { loading, message, error } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+    }
+    if (error) {
+      toast.error(error);
+    }
+  },[message,error]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) {
       toast("Please enter your email");
       return;
     }
-    try {
-      setLoading(true);
-      await forgotPassword(email);
-      toast.success("Reset link sent to your email");
-      setEmail("")
-    } catch (err) {
-      if (err.response?.status === 400) toast.error("Email not found");
-      else toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+
+    dispatch(forgotPasswordThunk({ email }));
   };
 
   return (
@@ -63,9 +63,9 @@ export const ForgotPassword = () => {
               <button
                 className="bg-teal-800 font-bold text-white py-2 rounded mt-5 px-12"
                 type="submit"
-             disabled={loading}
+                disabled={loading}
               >
-                {loading?"Sending...":"Send Link"}
+                {loading ? "Sending..." : "Send Link"}
               </button>
             </div>
           </form>

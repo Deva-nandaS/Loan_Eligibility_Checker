@@ -1,31 +1,49 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { PiSpinnerGap } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Sidebar } from "../../Components/Sidebar";
-import { getApplication } from "../../api/admindashboard";
 import { Button } from "../../Components/ui/Button";
+import { getApplicationThunk } from "../../redux/slices/adminSlice";
+import { toast } from "react-toastify";
 
 export const ViewApplication = () => {
   const { collapsed } = useSelector((state) => state.sidebar);
+  const { loading,error, application } = useSelector(
+    (state) => state.admin,
+  );
   const navigate = useNavigate();
-  const [views, setViews] = useState([]);
+  const dispatch = useDispatch();
+
   const [page, setPage] = useState(5);
   const [search, setSearch] = useState("");
+  const view= application|| [];
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getApplication();
-        setViews(data);
-      } catch (err) {}
-    };
-    fetchData();
-  }, []);
+    dispatch(getApplicationThunk());
+  }, [dispatch]);
 
-  const filteredViews = views.filter((item) =>
+useEffect(() => {
+  if (error) {
+    toast.error(error);
+  }
+}, [error]);
+
+
+  const filteredViews = view.filter((item) =>
     item?.name?.toLowerCase().includes(search.toLowerCase()),
   );
+
+  
+    if (loading)
+      return (
+        <div className="flex gap-2 h-screen items-center justify-center">
+          <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
+          <span className="font-bold text-3xl text-teal-900">Loading....</span>
+        </div>
+      );
 
   return (
     <div className="flex overflow-hidden h-screen">
@@ -50,7 +68,7 @@ export const ViewApplication = () => {
         </div>
 
         <p className="mt-6 mb-3 text-lg text-slate-700">
-          {views.length} applications
+          {view.length} applications
         </p>
 
         <div className="border rounded overflow-hidden bg-white">
@@ -95,8 +113,8 @@ export const ViewApplication = () => {
                   <td colSpan="8">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                       <p>
-                        Showing to {Math.min(views.length, page)} of{" "}
-                        {views.length} result{views.length !== 1 ? "s" : ""}
+                        Showing to {Math.min(view.length, page)} of{" "}
+                        {view.length} result{view.length !== 1 ? "s" : ""}
                       </p>
                       <div className="flex items-center gap-2 flex-wrap">
                         <p>Show:</p>

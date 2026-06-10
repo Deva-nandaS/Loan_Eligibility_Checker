@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { PiSpinnerGap } from "react-icons/pi";
 
 import { Button } from "../../Components/ui/Button";
 import { Sidebar } from "../../Components/Sidebar";
@@ -19,17 +20,33 @@ export const Result = () => {
   const dispatch = useDispatch();
   const { loading, result } = useSelector((state) => state.loan);
 
+  const loanState = useSelector((state) => state.loan);
+  console.log(loanState);
+ 
+
   useEffect(() => {
     dispatch(getResultThunk(id));
-  }, [dispatch]);
+  }, [dispatch, id]);
+
+
 
   if (loading)
     return (
-      <div className="flex h-screen items-center justify-center text-black font-bold">
-        Loading....
-      </div>
+     <div className="flex gap-2 items-center h-screen justify-center">
+            <PiSpinnerGap size={60} className="animate-spin text-teal-900" />
+            <span className="text-teal-900 font-bold text-3xl">Loading....</span>
+          </div>
     );
-  if (!result) return null;
+
+    
+  if (!result) {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      No result found
+    </div>
+  );
+}
+
 
   const success = [
     { label: "Applicant", value: result.name },

@@ -6,11 +6,16 @@ const loanValidation = require("../validations/loanValidation");
 const getLoanResult = async (req, res) => {
   try {
     const loan = await Loan.findById(req.params.id);
+
     if (!loan) {
-      return res.status(404).json({ message: "Resource(loan) not found" });
-    } 
+      return res.status(404).json({
+        message: "No result found",
+      });
+    }
+
+    return res.status(200).json(loan);
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ success:false,message: err.message });
   }
 };
 
@@ -34,12 +39,12 @@ const applyLoan = async (req, res) => {
 
   if (error) {
     return res.status(400).json({
+      success:false,
       message: error.details[0].message,
     });
   }
   try {
     const applicant = req.body;
-
     const eligibility = loanEligibility(applicant);
 
     if (!eligibility.eligible) {
@@ -97,7 +102,7 @@ const applyLoan = async (req, res) => {
       },
     });
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({success:false, message: err.message });
   }
 };
 
@@ -109,34 +114,32 @@ const getLoanHistory = async (req, res) => {
 
     return res.status(200).json(loans);
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ success:false,message: err.message });
   }
 };
 
 const getApplication = async (req, res) => {
   try {
     const applications = await Loan.find();
-    return res.status(200).json(applications);
+    return res.status(200).json({success:true,message:"Application found",data:applications});
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ success:false,message: err.message });
   }
 };
 
 const getApplicationById = async (req, res) => {
   try {
     const applicationDetails = await Loan.findById(req.params.id);
-    return res.status(200).json(applicationDetails);
+    return res.status(200).json({success:true,message:"Application Details",data:applicationDetails});
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({success:false, message: err.message});
   }
 };
 
 const updateOverride = async (req, res) => {
   try {
     const { eligible, reason, suggestions } = req.body; //data send (need to update) from frontend
-    console.log("Updated", req.body);
-    const loan = await Loan.findById(req.params.id); //data already in db
-    console.log("db data:", loan);
+
     let updatedData = {
       eligible,
       reasons: [reason],
@@ -150,7 +153,7 @@ const updateOverride = async (req, res) => {
       }
       const calc = loanCalculator(loan);
       const eligibility = loanEligibility(loan);
-      console.log("calculated data", calc);
+
       const debtRatio = (loan.debt / loan.income).toFixed(2);
       const totalPayable = Math.round(calc.emi * loan.loanTenure);
       const totalInterestPayable = totalPayable - loan.amount;
@@ -170,10 +173,10 @@ const updateOverride = async (req, res) => {
       { $set: updatedData },
       { new: true },
     );
-    console.log("updated loan:", updatedLoan);
+
     return res.status(200).json(updatedLoan);
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ success:false,message: err.message });
   }
 };
 

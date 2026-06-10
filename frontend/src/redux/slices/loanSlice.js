@@ -3,6 +3,35 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getLoanHistory, getLoanResult } from "../../api/apply";
 import { createLoan } from "../../api/apply";
 
+export const applyLoanthunk = createAsyncThunk(
+  "loan/apply",
+  async (loanData, { rejectWithValue }) => {
+    try {
+      const res = await createLoan(loanData);
+      return res;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "something went wrong",
+      );
+    }
+  },
+);
+
+export const getResultThunk = createAsyncThunk(
+  "loan/result",
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await getLoanResult(id);
+
+      return res;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "something went wrong",
+      );
+    }
+  },
+);
+
 export const fetchLoanHistory = createAsyncThunk(
   "loan/history",
   async (_, { rejectWithValue }) => {
@@ -14,36 +43,11 @@ export const fetchLoanHistory = createAsyncThunk(
   },
 );
 
-export const applyLoanthunk = createAsyncThunk(
-  "loan/apply",
-  async (loanData, { rejectWithValue }) => {
-    try {
-      const res = await createLoan(loanData);
-      return res;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message||"something went wrong");
-    }
-  },
-);
-
-
-export const getResultThunk = createAsyncThunk(
-  "loan/result",
-  async (id, { rejectWithValue }) => {
-    try {
-      const res = await getLoanResult(id);
-      return res;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message||"something went wrong");
-    }
-  },
-);
-
 const initialState = {
   loading: false,
   data: [],
   application: null,
-  result:null,
+  result: null,
   error: "",
 };
 
@@ -78,14 +82,15 @@ const loanSlice = createSlice({
         state.error = action.payload;
       })
 
-       .addCase(getResultThunk.pending, (state) => {
+      .addCase(getResultThunk.pending, (state) => {
         state.loading = true;
         state.error = "";
       })
       .addCase(getResultThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.result= action.payload;
+        state.result = action.payload;
       })
+
       .addCase(getResultThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
